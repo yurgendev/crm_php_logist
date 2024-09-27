@@ -7,6 +7,10 @@ use app\models\AccountSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use Yii;
+use app\models\Customer;
+use yii\helpers\ArrayHelper;
+
 
 /**
  * AccountController implements the CRUD actions for Account model.
@@ -69,16 +73,21 @@ class AccountController extends Controller
     {
         $model = new Account();
 
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
-            }
-        } else {
-            $model->loadDefaultValues();
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
         }
+
+        // Получаем всех клиентов
+        $customers = Customer::find()->all();
+
+        // Преобразуем данные в формат, подходящий для DropDownList
+        $customerList = ArrayHelper::map($customers, 'id', function($model) {
+            return $model->name;
+        });
 
         return $this->render('create', [
             'model' => $model,
+            'customerList' => $customerList,
         ]);
     }
 

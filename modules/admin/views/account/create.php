@@ -4,6 +4,7 @@ use yii\helpers\Html;
 
 /** @var yii\web\View $this */
 /** @var app\models\Account $model */
+/** @var array $customerList */
 
 $this->title = 'Create Account';
 $this->params['breadcrumbs'][] = ['label' => 'Accounts', 'url' => ['index']];
@@ -15,6 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= $this->render('_form', [
         'model' => $model,
+        'customerList' => $customerList,
     ]) ?>
 
 </div>
