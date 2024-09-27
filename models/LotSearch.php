@@ -14,7 +14,7 @@ class LotSearch extends Lot
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules() 
     {
         return [
             [['id', 'account_id', 'auction_id', 'customer_id', 'warehouse_id', 'company_id', 'has_keys'], 'integer'],

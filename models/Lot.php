@@ -61,13 +61,13 @@ class Lot extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['status'], 'string'],
-            [['status_changed', 'date_purchase', 'date_warehouse', 'payment_date', 'date_booking', 'data_container', 'date_unloaded', 'ata_data'], 'safe'],
-            [['date_purchase', 'auto', 'vin', 'lot', 'url', 'price'], 'required'],
+            [['auto', 'vin', 'lot', 'date_purchase'], 'required'],
             [['account_id', 'auction_id', 'customer_id', 'warehouse_id', 'company_id', 'has_keys'], 'integer'],
             [['price'], 'number'],
+            [['status'], 'string'],
+            [['status_changed', 'date_purchase', 'date_warehouse', 'payment_date', 'date_booking', 'data_container', 'date_unloaded', 'ata_data'], 'safe'],
             [['bos', 'photo_a', 'photo_d', 'photo_w', 'video', 'title', 'photo_l', 'auto', 'lot', 'line', 'booking_number', 'container'], 'string', 'max' => 255],
-            [['vin'], 'string', 'max' => 17],
+            [['vin'], 'string', 'max' => 255],
             [['url'], 'string', 'max' => 200],
             [['vin'], 'unique'],
             [['lot'], 'unique'],

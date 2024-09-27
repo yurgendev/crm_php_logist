@@ -2,11 +2,19 @@
 
 namespace app\modules\admin\controllers;
 
+use Yii;
 use app\models\Lot;
+use app\models\Account;
+use app\models\Customer;
+use app\models\Company;
+use app\models\Auction;
 use app\models\LotSearch;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+
+
 
 /**
  * LotController implements the CRUD actions for Lot model.
@@ -69,16 +77,26 @@ class LotController extends Controller
     {
         $model = new Lot();
 
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->save()) {
                 return $this->redirect(['view', 'id' => $model->id]);
+            } else {
+                Yii::error('Ошибка сохранения модели: ' . json_encode($model->errors));
             }
-        } else {
-            $model->loadDefaultValues();
         }
+
+        // Получаем данные для выпадающих списков
+        $accounts = ArrayHelper::map(Account::find()->all(), 'id', 'name');
+        $customers = ArrayHelper::map(Customer::find()->all(), 'id', 'name');
+        $companies = ArrayHelper::map(Company::find()->all(), 'id', 'name');
+        $auctions = ArrayHelper::map(Auction::find()->all(), 'id', 'name');
 
         return $this->render('create', [
             'model' => $model,
+            'accounts' => $accounts,
+            'customers' => $customers,
+            'companies' => $companies,
+            'auctions' => $auctions,
         ]);
     }
 
