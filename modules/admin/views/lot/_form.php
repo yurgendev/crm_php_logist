@@ -31,6 +31,26 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'company_id')->dropDownList($companies, ['prompt' => 'Выберите компанию']) ?>
     <?= $form->field($model, 'warehouse_id')->dropDownList($warehouses, ['prompt' => 'Выберите склад']) ?>
 
+    <?= $form->field($model, 'bos')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'photo_a')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'photo_d')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'photo_w')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'video')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'photo_l')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'status')->dropDownList($statuses, ['prompt' => 'Выберите статус']) ?>
+    <?= $form->field($model, 'status_changed')->input('date') ?>
+    <?= $form->field($model, 'date_warehouse')->input('date') ?>
+    <?= $form->field($model, 'payment_date')->input('date') ?>
+    <?= $form->field($model, 'date_booking')->input('date') ?>
+    <?= $form->field($model, 'data_container')->input('date') ?>
+    <?= $form->field($model, 'date_unloaded')->input('date') ?>
+    <?= $form->field($model, 'has_keys')->checkbox() ?>
+    <?= $form->field($model, 'line')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'booking_number')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'container')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'ata_data')->input('date') ?>
+
     <div class="form-group">
         <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
     </div>

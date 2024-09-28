@@ -21,13 +21,16 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Create Lot', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+
+    <!-- поисковик для будушего -->
+    <!-- <?php echo $this->render('_search', ['model' => $searchModel]); ?> -->
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
+            
 
             // 'id',
             // 'bos',
@@ -51,7 +54,11 @@ $this->params['breadcrumbs'][] = $this->title;
             //'account_id',
             //'auction_id',
             //'customer_id',
-            'warehouse_id',
+            // 'warehouse_id',
+            [
+                'attribute' => 'warehouse_id',
+                'value' => 'warehouse.name',
+            ],
             //'company_id',
             //'url:url',
             //'price',

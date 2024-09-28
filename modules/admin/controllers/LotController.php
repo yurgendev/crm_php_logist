@@ -23,6 +23,7 @@ use yii\filters\VerbFilter;
  */
 class LotController extends Controller
 {
+    
     /**
      * @inheritDoc
      */
@@ -50,6 +51,11 @@ class LotController extends Controller
     {
         $searchModel = new LotSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
+
+        // Добавляем загрузку связанных данных
+        if ($dataProvider->query instanceof \yii\db\ActiveQuery) {
+            $dataProvider->query->with(['account', 'auction', 'customer', 'warehouse', 'company']);
+        }
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -109,6 +115,21 @@ class LotController extends Controller
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
+
+    
+
+    /**
+     * Получает статусы из базы данных.
+     * @return array
+     */
+    protected function getStatuses()
+    {
+        $tableSchema = Yii::$app->db->schema->getTableSchema('lot');
+        $column = $tableSchema->columns['status'];
+        $enumValues = $column->enumValues;
+
+        return array_combine($enumValues, $enumValues);
+    }
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
@@ -123,6 +144,9 @@ class LotController extends Controller
         $companies = ArrayHelper::map(Company::find()->all(), 'id', 'name');
         $auctions = ArrayHelper::map(Auction::find()->all(), 'id', 'name');
         $warehouses = ArrayHelper::map(Warehouse::find()->all(), 'id', 'name');
+        $statuses = $this->getStatuses();
+
+        Yii::debug('Статусы: ' . json_encode($statuses));
 
         return $this->render('update', [
             'model' => $model,
@@ -131,8 +155,11 @@ class LotController extends Controller
             'companies' => $companies,
             'auctions' => $auctions,
             'warehouses' => $warehouses,
+            'statuses' => $statuses,
         ]);
     }
+
+    
 
     /**
      * Deletes an existing Lot model.
