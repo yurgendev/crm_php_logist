@@ -9,10 +9,12 @@ use app\models\Customer;
 use app\models\Company;
 use app\models\Auction;
 use app\models\LotSearch;
+use app\models\Warehouse;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+
 
 
 
@@ -111,12 +113,24 @@ class LotController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
+        // Получаем данные для выпадающих списков
+        $accounts = ArrayHelper::map(Account::find()->all(), 'id', 'name');
+        $customers = ArrayHelper::map(Customer::find()->all(), 'id', 'name');
+        $companies = ArrayHelper::map(Company::find()->all(), 'id', 'name');
+        $auctions = ArrayHelper::map(Auction::find()->all(), 'id', 'name');
+        $warehouses = ArrayHelper::map(Warehouse::find()->all(), 'id', 'name');
+
         return $this->render('update', [
             'model' => $model,
+            'accounts' => $accounts,
+            'customers' => $customers,
+            'companies' => $companies,
+            'auctions' => $auctions,
+            'warehouses' => $warehouses,
         ]);
     }
 

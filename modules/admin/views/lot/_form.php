@@ -10,6 +10,7 @@ use yii\widgets\ActiveForm;
 /** @var array $customers */
 /** @var array $companies */
 /** @var array $auctions */
+/** @var array $warehouses */
 
 ?>
 
@@ -24,12 +25,11 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'price')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'url')->textInput(['maxlength' => true]) ?>
 
-    
-
     <?= $form->field($model, 'account_id')->dropDownList($accounts, ['prompt' => 'Выберите аккаунт']) ?>
     <?= $form->field($model, 'auction_id')->dropDownList($auctions, ['prompt' => 'Выберите аукцион']) ?>
     <?= $form->field($model, 'customer_id')->dropDownList($customers, ['prompt' => 'Выберите клиента']) ?>
     <?= $form->field($model, 'company_id')->dropDownList($companies, ['prompt' => 'Выберите компанию']) ?>
+    <?= $form->field($model, 'warehouse_id')->dropDownList($warehouses, ['prompt' => 'Выберите склад']) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
