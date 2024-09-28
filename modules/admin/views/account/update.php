@@ -4,6 +4,7 @@ use yii\helpers\Html;
 
 /** @var yii\web\View $this */
 /** @var app\models\Account $model */
+/** @var array $customerList */
 
 $this->title = 'Update Account: ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Accounts', 'url' => ['index']];
@@ -16,6 +17,7 @@ $this->params['breadcrumbs'][] = 'Update';
 
     <?= $this->render('_form', [
         'model' => $model,
+        'customerList' => $customerList,
     ]) ?>
 
 </div>

@@ -102,12 +102,19 @@ class AccountController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
+        // Получаем данные для выпадающего списка клиентов
+        $customers = Customer::find()->all();
+        $customerList = ArrayHelper::map($customers, 'id', function($model) {
+            return $model->name;
+        });
+
         return $this->render('update', [
             'model' => $model,
+            'customerList' => $customerList,
         ]);
     }
 
