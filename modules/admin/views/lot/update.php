@@ -9,6 +9,7 @@ use yii\helpers\Html;
 /** @var array $companies */
 /** @var array $auctions */
 /** @var array $warehouses */
+/** @var array $statuses */
 
 $this->title = 'Update Lot: ' . $model->title;
 $this->params['breadcrumbs'][] = ['label' => 'Lots', 'url' => ['index']];
