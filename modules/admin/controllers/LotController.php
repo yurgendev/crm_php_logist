@@ -1,5 +1,4 @@
 <?php
-
 namespace app\modules\admin\controllers;
 
 use Yii;
@@ -15,15 +14,11 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
-
-
-
 /**
  * LotController implements the CRUD actions for Lot model.
  */
 class LotController extends Controller
 {
-    
     /**
      * @inheritDoc
      */
@@ -98,6 +93,8 @@ class LotController extends Controller
         $customers = ArrayHelper::map(Customer::find()->all(), 'id', 'name');
         $companies = ArrayHelper::map(Company::find()->all(), 'id', 'name');
         $auctions = ArrayHelper::map(Auction::find()->all(), 'id', 'name');
+        $warehouses = ArrayHelper::map(Warehouse::find()->all(), 'id', 'name');
+        $statuses = $this->getStatuses();
 
         return $this->render('create', [
             'model' => $model,
@@ -105,6 +102,8 @@ class LotController extends Controller
             'customers' => $customers,
             'companies' => $companies,
             'auctions' => $auctions,
+            'warehouses' => $warehouses,
+            'statuses' => $statuses,
         ]);
     }
 
@@ -115,21 +114,6 @@ class LotController extends Controller
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-
-    
-
-    /**
-     * Получает статусы из базы данных.
-     * @return array
-     */
-    protected function getStatuses()
-    {
-        $tableSchema = Yii::$app->db->schema->getTableSchema('lot');
-        $column = $tableSchema->columns['status'];
-        $enumValues = $column->enumValues;
-
-        return array_combine($enumValues, $enumValues);
-    }
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
@@ -146,8 +130,6 @@ class LotController extends Controller
         $warehouses = ArrayHelper::map(Warehouse::find()->all(), 'id', 'name');
         $statuses = $this->getStatuses();
 
-        Yii::debug('Статусы: ' . json_encode($statuses));
-
         return $this->render('update', [
             'model' => $model,
             'accounts' => $accounts,
@@ -159,7 +141,18 @@ class LotController extends Controller
         ]);
     }
 
-    
+    /**
+     * Получает статусы из базы данных.
+     * @return array
+     */
+    protected function getStatuses()
+    {
+        $tableSchema = Yii::$app->db->schema->getTableSchema('lot');
+        $column = $tableSchema->columns['status'];
+        $enumValues = $column->enumValues;
+
+        return array_combine($enumValues, $enumValues);
+    }
 
     /**
      * Deletes an existing Lot model.
