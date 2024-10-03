@@ -58,7 +58,7 @@ class Lot extends \yii\db\ActiveRecord
     public $videoFiles;
     public $titleFiles;
     public $photoLFiles;
-    
+
     public static function tableName()
     {
         return 'Lot';
@@ -132,6 +132,11 @@ class Lot extends \yii\db\ActiveRecord
             'videoFiles' => 'Video Files',
             'titleFiles' => 'Title Files',
             'photoLFiles' => 'Photo L Files',
+            'account.name' => 'Account',
+            'auction.name' => 'Auction',
+            'customer.name' => 'Customer',
+            'warehouse.name' => 'Warehouse',
+            'company.name' => 'Company',
         ];
     }
 
@@ -183,5 +188,49 @@ class Lot extends \yii\db\ActiveRecord
     public function getWarehouse()
     {
         return $this->hasOne(Warehouse::class, ['id' => 'warehouse_id']);
+    }
+
+    // подсчет количества файлов
+    public function getBosFileCount()
+    {
+        return $this->getFileCount($this->bos);
+    }
+
+    public function getPhotoAFileCount()
+    {
+        return $this->getFileCount($this->photo_a);
+    }
+
+    public function getPhotoDFileCount()
+    {
+        return $this->getFileCount($this->photo_d);
+    }
+
+    public function getPhotoWFileCount()
+    {
+        return $this->getFileCount($this->photo_w);
+    }
+
+    public function getVideoFileCount()
+    {
+        return $this->getFileCount($this->video);
+    }
+
+    public function getTitleFileCount()
+    {
+        return $this->getFileCount($this->title);
+    }
+
+    public function getPhotoLFileCount()
+    {
+        return $this->getFileCount($this->photo_l);
+    }
+
+    private function getFileCount($files)
+    {
+        if (empty($files)) {
+            return 0;
+        }
+        return count(explode(',', $files));
     }
 }

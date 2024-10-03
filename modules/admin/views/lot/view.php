@@ -29,37 +29,78 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
-            'bos',
-            'photo_a',
-            'photo_d',
-            'photo_w',
-            'video',
-            'title',
-            'photo_l',
+            // 'id',
+            // Core infa
             'status',
-            'status_changed',
+            'auto',
+            'vin',
+            'lot',
+            'price',
+            'has_keys',
+            // 'status_changed',
+
+            // DATES:
             'date_purchase',
             'date_warehouse',
             'payment_date',
             'date_booking',
             'data_container',
             'date_unloaded',
-            'auto',
-            'vin',
-            'lot',
-            'account_id',
-            'auction_id',
-            'customer_id',
-            'warehouse_id',
-            'company_id',
+            'ata_data',
+
+
+            // 'account_id',
+            'account.name',
+            // 'auction_id',
+            'auction.name',
+            // 'customer_id',
+            'customer.name',
+            // 'warehouse_id',
+            'warehouse.name',
+            // 'company_id',
+            'company.name',
             'url:url',
-            'price',
-            'has_keys',
+
             'line',
             'booking_number',
             'container',
-            'ata_data',
+
+            //  files:
+            [
+                'attribute' => 'bos',
+                'value' => $model->getBosFileCount() > 0 ? $model->getBosFileCount() . ' files' : '',
+                'label' => 'Bos Files',
+            ],
+            [
+                'attribute' => 'photo_a',
+                'value' => $model->getPhotoAFileCount() > 0 ? $model->getPhotoAFileCount() . ' files' : '',
+                'label' => 'Photo A Files',
+            ],
+            [
+                'attribute' => 'photo_d',
+                'value' => $model->getPhotoDFileCount() > 0 ? $model->getPhotoDFileCount() . ' files' : '',
+                'label' => 'Photo D Files',
+            ],
+            [
+                'attribute' => 'photo_w',
+                'value' => $model->getPhotoWFileCount() > 0 ? $model->getPhotoWFileCount() . ' files' : '',
+                'label' => 'Photo W Files',
+            ],
+            [
+                'attribute' => 'video',
+                'value' => $model->getVideoFileCount() > 0 ? $model->getVideoFileCount() . ' files' : '',
+                'label' => 'Video Files',
+            ],
+            [
+                'attribute' => 'title',
+                'value' => $model->getTitleFileCount() > 0 ? $model->getTitleFileCount() . ' files' : '',
+                'label' => 'Title Files',
+            ],
+            [
+                'attribute' => 'photo_l',
+                'value' => $model->getPhotoLFileCount() > 0 ? $model->getPhotoLFileCount() . ' files' : '',
+                'label' => 'Photo L Files',
+            ],
         ],
     ]) ?>
 

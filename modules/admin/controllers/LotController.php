@@ -137,7 +137,7 @@ class LotController extends Controller
                 $model->video = $this->mergeFilePaths($model->video, $this->saveFiles($model->videoFiles, 'uploads/video'));
                 $model->title = $this->mergeFilePaths($model->title, $this->saveFiles($model->titleFiles, 'uploads/title'));
                 $model->photo_l = $this->mergeFilePaths($model->photo_l, $this->saveFiles($model->photoLFiles, 'uploads/photo_l'));
-    
+
                 $model->save(false); // Сохраняем модель без валидации, так как данные уже валидированы
 
                 return $this->redirect(['view', 'id' => $model->id]);
