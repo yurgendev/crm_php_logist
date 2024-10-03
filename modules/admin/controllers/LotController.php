@@ -14,6 +14,7 @@ use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 /**
  * LotController implements the CRUD actions for Lot model.
@@ -120,10 +121,31 @@ class LotController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post())) {
+            $model->bosFiles = UploadedFile::getInstances($model, 'bosFiles');
+            $model->photoAFiles = UploadedFile::getInstances($model, 'photoAFiles');
+            $model->photoDFiles = UploadedFile::getInstances($model, 'photoDFiles');
+            $model->photoWFiles = UploadedFile::getInstances($model, 'photoWFiles');
+            $model->videoFiles = UploadedFile::getInstances($model, 'videoFiles');
+            $model->titleFiles = UploadedFile::getInstances($model, 'titleFiles');
+            $model->photoLFiles = UploadedFile::getInstances($model, 'photoLFiles');
+
             if ($model->save()) {
+                $model->bos = $this->mergeFilePaths($model->bos, $this->saveFiles($model->bosFiles, 'uploads/bos'));
+                $model->photo_a = $this->mergeFilePaths($model->photo_a, $this->saveFiles($model->photoAFiles, 'uploads/photo_a'));
+                $model->photo_d = $this->mergeFilePaths($model->photo_d, $this->saveFiles($model->photoDFiles, 'uploads/photo_d'));
+                $model->photo_w = $this->mergeFilePaths($model->photo_w, $this->saveFiles($model->photoWFiles, 'uploads/photo_w'));
+                $model->video = $this->mergeFilePaths($model->video, $this->saveFiles($model->videoFiles, 'uploads/video'));
+                $model->title = $this->mergeFilePaths($model->title, $this->saveFiles($model->titleFiles, 'uploads/title'));
+                $model->photo_l = $this->mergeFilePaths($model->photo_l, $this->saveFiles($model->photoLFiles, 'uploads/photo_l'));
+    
+                $model->save(false); // Сохраняем модель без валидации, так как данные уже валидированы
+
                 return $this->redirect(['view', 'id' => $model->id]);
             } else {
                 Yii::error('Ошибка сохранения модели: ' . json_encode($model->errors));
+                // Вывод ошибок валидации
+                var_dump($model->errors);
+                die();
             }
         }
 
@@ -146,10 +168,32 @@ class LotController extends Controller
         ]);
     }
 
+
+    protected function mergeFilePaths($existingPaths, $newPaths)
+    {
+        $existingPathsArray = $existingPaths ? explode(',', $existingPaths) : [];
+        $mergedPathsArray = array_merge($existingPathsArray, $newPaths);
+        return implode(',', $mergedPathsArray);
+    }
     /**
      * Получает статусы из базы данных.
      * @return array
      */
+    protected function saveFiles($files, $directory)
+    {
+        $filePaths = [];
+        foreach ($files as $file) {
+            $uniqueName = md5($file->baseName . time()) . '.' . $file->extension;
+            $filePath = $directory . '/' . $uniqueName;
+            if (!is_dir($directory)) {
+                mkdir($directory, 0777, true);
+            }
+            if ($file->saveAs($filePath)) {
+                $filePaths[] = $filePath;
+            }
+        }
+        return $filePaths; // Возвращаем массив путей к файлам
+    }
     protected function getStatuses()
     {
         $tableSchema = Yii::$app->db->schema->getTableSchema('lot');

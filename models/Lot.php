@@ -50,6 +50,15 @@ class Lot extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
+
+    public $bosFiles;
+    public $photoAFiles;
+    public $photoDFiles;
+    public $photoWFiles;
+    public $videoFiles;
+    public $titleFiles;
+    public $photoLFiles;
+    
     public static function tableName()
     {
         return 'Lot';
@@ -62,6 +71,7 @@ class Lot extends \yii\db\ActiveRecord
     {
         return [
             [['auto', 'vin', 'lot', 'date_purchase'], 'required'],
+            [['bosFiles', 'photoAFiles', 'photoDFiles', 'photoWFiles', 'videoFiles', 'titleFiles', 'photoLFiles'], 'file', 'maxFiles' => 25],
             [['account_id', 'auction_id', 'customer_id', 'warehouse_id', 'company_id', 'has_keys'], 'integer'],
             [['price'], 'number'],
             [['status'], 'string'],
@@ -116,6 +126,12 @@ class Lot extends \yii\db\ActiveRecord
             'booking_number' => 'Booking Number',
             'container' => 'Container',
             'ata_data' => 'Ata Data',
+            'photoAFiles' => 'Photo A Files',
+            'photoDFiles' => 'Photo D Files',
+            'photoWFiles' => 'Photo W Files',
+            'videoFiles' => 'Video Files',
+            'titleFiles' => 'Title Files',
+            'photoLFiles' => 'Photo L Files',
         ];
     }
 

@@ -17,7 +17,7 @@ use yii\widgets\ActiveForm;
 
 <div class="lot-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
     <?= $form->field($model, 'auto')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'vin')->textInput(['maxlength' => true]) ?>
@@ -25,20 +25,24 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'date_purchase')->input('date') ?>
     <?= $form->field($model, 'price')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'url')->textInput(['maxlength' => true]) ?>
-
+    <br>
+    <br>
     <?= $form->field($model, 'account_id')->dropDownList($accounts, ['prompt' => 'Выберите аккаунт']) ?>
     <?= $form->field($model, 'auction_id')->dropDownList($auctions, ['prompt' => 'Выберите аукцион']) ?>
     <?= $form->field($model, 'customer_id')->dropDownList($customers, ['prompt' => 'Выберите клиента']) ?>
     <?= $form->field($model, 'company_id')->dropDownList($companies, ['prompt' => 'Выберите компанию']) ?>
     <?= $form->field($model, 'warehouse_id')->dropDownList($warehouses, ['prompt' => 'Выберите склад']) ?>
-
-    <?= $form->field($model, 'bos')->textInput(['maxlength' => true]) ?>
-    <?= $form->field($model, 'photo_a')->textInput(['maxlength' => true]) ?>
-    <?= $form->field($model, 'photo_d')->textInput(['maxlength' => true]) ?>
-    <?= $form->field($model, 'photo_w')->textInput(['maxlength' => true]) ?>
-    <?= $form->field($model, 'video')->textInput(['maxlength' => true]) ?>
-    <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
-    <?= $form->field($model, 'photo_l')->textInput(['maxlength' => true]) ?>
+    <br>
+    <br>
+    <?= $form->field($model, 'bosFiles[]')->fileInput(['multiple' => true]) ?>
+    <?= $form->field($model, 'photoAFiles[]')->fileInput(['multiple' => true]) ?>
+    <?= $form->field($model, 'photoDFiles[]')->fileInput(['multiple' => true]) ?>
+    <?= $form->field($model, 'photoWFiles[]')->fileInput(['multiple' => true]) ?>
+    <?= $form->field($model, 'videoFiles[]')->fileInput(['multiple' => true]) ?>
+    <?= $form->field($model, 'titleFiles[]')->fileInput(['multiple' => true]) ?>
+    <?= $form->field($model, 'photoLFiles[]')->fileInput(['multiple' => true]) ?>
+    <br>
+    <br>
     <?= $form->field($model, 'status')->dropDownList($statuses, ['prompt' => 'Выберите статус']) ?>
     <?= $form->field($model, 'status_changed')->input('date') ?>
     <?= $form->field($model, 'date_warehouse')->input('date') ?>
