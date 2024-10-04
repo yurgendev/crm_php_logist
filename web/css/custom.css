@@ -235,3 +235,34 @@ ul li:hover .fas {
         padding: 4px;
     }
 }
+
+.pagination-wrapper {
+    margin-top: 20px;
+}
+
+.pagination .page-item {
+    margin: 0 5px;
+}
+
+.pagination .page-link {
+    padding: 10px 15px;
+    border-radius: 5px;
+    color: #6f42c1; /* Фиолетовый цвет */
+    border: 1px solid #6f42c1; /* Фиолетовый цвет */
+}
+
+.pagination .page-link:hover {
+    background-color: #6f42c1; /* Фиолетовый цвет */
+    color: white;
+}
+
+.pagination .active .page-link {
+    background-color: #6f42c1; /* Фиолетовый цвет */
+    border-color: #6f42c1; /* Фиолетовый цвет */
+    color: white;
+}
+
+.pagination .disabled .page-link {
+    color: #6f42c1; /* Фиолетовый цвет */
+    border-color: #6f42c1; /* Фиолетовый цвет */
+}

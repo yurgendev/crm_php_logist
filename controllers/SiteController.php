@@ -9,6 +9,8 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use app\models\Lot;
+use yii\data\Pagination;
 
 class SiteController extends Controller
 {
@@ -125,4 +127,50 @@ class SiteController extends Controller
     {
         return $this->render('about');
     }
+
+    
+
+    public function actionAllLots()
+    {
+        $query = Lot::find();
+
+        // Получаем значение поиска из запроса
+        $search = Yii::$app->request->get('search');
+        if ($search) {
+            $query->andFilterWhere(['or',
+                ['like', 'vin', $search],
+                ['like', 'lot', $search],
+                ['like', 'auto', $search],
+            ]);
+        }
+
+        // Создаем объект пагинации
+        $pagination = new Pagination([
+            'defaultPageSize' => 2,
+            'totalCount' => $query->count(),
+        ]);
+
+        $lots = $query->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+
+        return $this->render('all_lots', [
+            'lots' => $lots,
+            'pagination' => $pagination,
+            'search' => $search, // Передаем значение поиска в представление
+        ]);
+    }
+
+    public function actionViewPhotos($id)
+{
+    $lot = Lot::findOne($id);
+    if (!$lot) {
+        throw new \yii\web\NotFoundHttpException('Lot not found.');
+    }
+
+    return $this->render('view_photos', [
+        'lot' => $lot,
+    ]);
+}
+
 }

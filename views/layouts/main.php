@@ -18,6 +18,8 @@ AppAsset::register($this);
     <title><?= Html::encode($this->title) ?></title>
     <?= Html::csrfMetaTags() ?>
     <?php $this->head() ?>
+    <!-- Подключение Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
 <?php $this->beginBody() ?>
@@ -36,23 +38,15 @@ AppAsset::register($this);
     </div>
     <div class="d-md-flex">
         <ul id="navbar-items" class="p-0">
-            <li><span class="fas fa-th-list"></span><span class="ps-3 name">All cars</span></li>
-            <li><span class="fas fa-chart-line"></span><span class="ps-3 name">New</span></li>
-            <li><span class="fas fa-clipboard-check"></span><span class="ps-3 name">Dispatched</span></li>
-            <li><span class="fas fa-suitcase-rolling"></span><span class="ps-3 name">Terminal</span></li>
-            <li><span class="fas fa-calendar-alt"></span><span class="ps-3 name">Loading</span></li>
-            <li><span class="fas fa-comment-alt"></span><span class="ps-3 name">Shipped</span></li>
-            <li><span class="fas fa-store-alt"></span><span class="ps-3 name">Unloaded</span></li>
+            <li><a class="nav-link" href="<?= \yii\helpers\Url::to(['site/all-lots']) ?>"><span class="fas fa-car"></span><span class="ps-3 name">All cars</span></a></li>
+            <li><a class="nav-link" href="#"><span class="fas fa-plus-circle"></span><span class="ps-3 name">New</span></a></li>
+            <li><a class="nav-link" href="#"><span class="fas fa-truck"></span><span class="ps-3 name">Dispatched</span></a></li>
+            <li><a class="nav-link" href="#"><span class="fas fa-warehouse"></span><span class="ps-3 name">Terminal</span></a></li>
+            <li><a class="nav-link" href="#"><span class="fas fa-box"></span><span class="ps-3 name">Loading</span></a></li>
+            <li><a class="nav-link" href="#"><span class="fas fa-ship"></span><span class="ps-3 name">Shipped</span></a></li>
+            <li><a class="nav-link" href="#"><span class="fas fa-clipboard-check"></span><span class="ps-3 name">Unloaded</span></a></li>
         </ul>
         <div id="topnavbar">
-            
-            <div class="d-flex align-items-center mb-3 px-md-3 px-2">
-                <span class="text-uppercase fs13 fw-bolder pe-3">search<span class="ps-1">by</span></span>
-                <form class="example d-flex align-items-center">
-                    <input type="text" placeholder="Type VIN, Lot or Auto" name="search">
-                    <button type="submit">↵<i class="fa fa-search"></i></button>
-                </form>
-            </div>
             <div class="table-responsive px-2">
                 <?= $content ?>
             </div>
