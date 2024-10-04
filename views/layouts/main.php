@@ -1,79 +1,68 @@
 <?php
 
-/** @var yii\web\View $this */
+/** @var \yii\web\View $this */
 /** @var string $content */
 
-use app\assets\AppAsset;
-use app\widgets\Alert;
-use yii\bootstrap5\Breadcrumbs;
 use yii\bootstrap5\Html;
-use yii\bootstrap5\Nav;
-use yii\bootstrap5\NavBar;
+use app\assets\AppAsset;
 
 AppAsset::register($this);
-
-$this->registerCsrfMetaTags();
-$this->registerMetaTag(['charset' => Yii::$app->charset], 'charset');
-$this->registerMetaTag(['name' => 'viewport', 'content' => 'width=device-width, initial-scale=1, shrink-to-fit=no']);
-$this->registerMetaTag(['name' => 'description', 'content' => $this->params['meta_description'] ?? '']);
-$this->registerMetaTag(['name' => 'keywords', 'content' => $this->params['meta_keywords'] ?? '']);
-$this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii::getAlias('@web/favicon.ico')]);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
-<html lang="<?= Yii::$app->language ?>" class="h-100">
+<html lang="<?= Yii::$app->language ?>">
 <head>
+    <meta charset="<?= Yii::$app->charset ?>">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= Html::encode($this->title) ?></title>
+    <?= Html::csrfMetaTags() ?>
     <?php $this->head() ?>
 </head>
-<body class="d-flex flex-column h-100">
+<body>
 <?php $this->beginBody() ?>
 
-<header id="header">
-    <?php
-    NavBar::begin([
-        'brandLabel' => Yii::$app->name,
-        'brandUrl' => Yii::$app->homeUrl,
-        'options' => ['class' => 'navbar-expand-md navbar-dark bg-dark fixed-top']
-    ]);
-    echo Nav::widget([
-        'options' => ['class' => 'navbar-nav'],
-        'items' => [
-            ['label' => 'Home', 'url' => ['/site/index']],
-            ['label' => 'About', 'url' => ['/site/about']],
-            ['label' => 'Contact', 'url' => ['/site/contact']],
-            Yii::$app->user->isGuest
-                ? ['label' => 'Login', 'url' => ['/site/login']]
-                : '<li class="nav-item">'
-                    . Html::beginForm(['/site/logout'])
-                    . Html::submitButton(
-                        'Logout (' . Yii::$app->user->identity->username . ')',
-                        ['class' => 'nav-link btn btn-link logout']
-                    )
-                    . Html::endForm()
-                    . '</li>'
-        ]
-    ]);
-    NavBar::end();
-    ?>
-</header>
-
-<main id="main" class="flex-shrink-0" role="main">
-    <div class="container">
-        <?php if (!empty($this->params['breadcrumbs'])): ?>
-            <?= Breadcrumbs::widget(['links' => $this->params['breadcrumbs']]) ?>
-        <?php endif ?>
-        <?= Alert::widget() ?>
-        <?= $content ?>
-    </div>
-</main>
-
-<footer id="footer" class="mt-auto py-3 bg-light">
-    <div class="container">
-        <div class="row text-muted">
-            <div class="col-md-6 text-center text-md-start">&copy; My Company <?= date('Y') ?></div>
-            <div class="col-md-6 text-center text-md-end"><?= Yii::powered() ?></div>
+<div class="px-0 bg-light">
+    <div class="d-flex">
+        <div class="d-flex align-items-center" id="navbar">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-items" aria-controls="navbarSupportedContent" aria-expanded="true" aria-label="Toggle navigation">
+                <span class="fas fa-bars"></span>
+            </button>
+            <a class="text-decoration-none fs14 ps-2" href="#">ACQUIRED<span class="fs13 pe-2">.com</span></a>
         </div>
+        <div id="navbar2" class="d-flex justify-content-end pe-4">
+            <span class="far fa-user-circle"></span>
+        </div>
+    </div>
+    <div class="d-md-flex">
+        <ul id="navbar-items" class="p-0">
+            <li><span class="fas fa-th-list"></span><span class="ps-3 name">All cars</span></li>
+            <li><span class="fas fa-chart-line"></span><span class="ps-3 name">New</span></li>
+            <li><span class="fas fa-clipboard-check"></span><span class="ps-3 name">Dispatched</span></li>
+            <li><span class="fas fa-suitcase-rolling"></span><span class="ps-3 name">Terminal</span></li>
+            <li><span class="fas fa-calendar-alt"></span><span class="ps-3 name">Loading</span></li>
+            <li><span class="fas fa-comment-alt"></span><span class="ps-3 name">Shipped</span></li>
+            <li><span class="fas fa-store-alt"></span><span class="ps-3 name">Unloaded</span></li>
+        </ul>
+        <div id="topnavbar">
+            
+            <div class="d-flex align-items-center mb-3 px-md-3 px-2">
+                <span class="text-uppercase fs13 fw-bolder pe-3">search<span class="ps-1">by</span></span>
+                <form class="example d-flex align-items-center">
+                    <input type="text" placeholder="Type VIN, Lot or Auto" name="search">
+                    <button type="submit">↵<i class="fa fa-search"></i></button>
+                </form>
+            </div>
+            <div class="table-responsive px-2">
+                <?= $content ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="footer mt-auto py-3 bg-light">
+    <div class="container">
+        <span class="text-muted">&copy; My Yii Application <?= date('Y') ?></span>
     </div>
 </footer>
 
