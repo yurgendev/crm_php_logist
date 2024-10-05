@@ -20,47 +20,57 @@ AppAsset::register($this);
     <?php $this->head() ?>
     <!-- Подключение Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Подключение пользовательского CSS -->
+    <link rel="stylesheet" href="<?= Yii::$app->request->baseUrl ?>/css/site.css">
+    <link rel="stylesheet" href="<?= Yii::$app->request->baseUrl ?>/css/custom.css">
 </head>
 <body>
 <?php $this->beginBody() ?>
 
-<div class="px-0 bg-light">
-    <div class="d-flex">
-        <div class="d-flex align-items-center" id="navbar">
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-items" aria-controls="navbarSupportedContent" aria-expanded="true" aria-label="Toggle navigation">
-                <span class="fas fa-bars"></span>
-            </button>
-            <a class="text-decoration-none fs14 ps-2" href="#">ACQUIRED<span class="fs13 pe-2">.com</span></a>
-        </div>
-        <div id="navbar2" class="d-flex justify-content-end pe-4">
+<div class="container-fluid px-0 bg-light">
+    <div class="row no-gutters">
+        <div class="col-md-2 d-flex align-items-center justify-content-between sidebar-header" id="navbar">
+            <div>
+                <a class="text-decoration-none fs14 ps-2" href="#">logic magic<span class="fs13 pe-2">.com</span></a>
+            </div>
             <span class="far fa-user-circle"></span>
         </div>
+        <div class="col-md-10 d-flex justify-content-end pe-4" id="navbar2">
+            <!-- Удалено, так как иконка перемещена -->
+        </div>
     </div>
-    <div class="d-md-flex">
-        <ul id="navbar-items" class="p-0">
-            <li><a class="nav-link" href="<?= \yii\helpers\Url::to(['site/all-lots']) ?>"><span class="fas fa-car"></span><span class="ps-3 name">All cars</span></a></li>
-            <li><a class="nav-link" href="#"><span class="fas fa-plus-circle"></span><span class="ps-3 name">New</span></a></li>
-            <li><a class="nav-link" href="#"><span class="fas fa-truck"></span><span class="ps-3 name">Dispatched</span></a></li>
-            <li><a class="nav-link" href="#"><span class="fas fa-warehouse"></span><span class="ps-3 name">Terminal</span></a></li>
-            <li><a class="nav-link" href="#"><span class="fas fa-box"></span><span class="ps-3 name">Loading</span></a></li>
-            <li><a class="nav-link" href="#"><span class="fas fa-ship"></span><span class="ps-3 name">Shipped</span></a></li>
-            <li><a class="nav-link" href="#"><span class="fas fa-clipboard-check"></span><span class="ps-3 name">Unloaded</span></a></li>
-        </ul>
-        <div id="topnavbar">
-            <div class="table-responsive px-2">
+    <div class="row no-gutters">
+        <div class="col-md-2" id="sidebar-container">
+            <ul id="navbar-items" class="sidebar p-0">
+                <li><a class="nav-link" href="<?= \yii\helpers\Url::to(['site/all-lots']) ?>"><span class="fas fa-car"></span><span class="ps-3 name">All cars</span></a></li>
+                <li><a class="nav-link" href="<?= \yii\helpers\Url::to(['site/new']) ?>"><span class="fas fa-plus-circle"></span><span class="ps-3 name">New</span></a></li>
+                <li><a class="nav-link" href="<?= \yii\helpers\Url::to(['site/dispatched']) ?>"><span class="fas fa-truck"></span><span class="ps-3 name">Dispatched</span></a></li>
+                <li><a class="nav-link" href="<?= \yii\helpers\Url::to(['site/terminal']) ?>"><span class="fas fa-warehouse"></span><span class="ps-3 name">Terminal</span></a></li>
+                <li><a class="nav-link" href="<?= \yii\helpers\Url::to(['site/loading']) ?>"><span class="fas fa-box"></span><span class="ps-3 name">Loading</span></a></li>
+                <li><a class="nav-link" href="<?= \yii\helpers\Url::to(['site/shipped']) ?>"><span class="fas fa-ship"></span><span class="ps-3 name">Shipped</span></a></li>
+                <li><a class="nav-link" href="<?= \yii\helpers\Url::to(['site/unloaded']) ?>"><span class="fas fa-clipboard-check"></span><span class="ps-3 name">Unloaded</span></a></li>
+            </ul>
+        </div>
+        <div class="col-md-10">
+            <div class="main-content">
                 <?= $content ?>
             </div>
         </div>
     </div>
+    <div class="row no-gutters">
+        <div class="col-md-12">
+            <footer class="footer mt-auto py-3 bg-light">
+                <div class="container">
+                    <span class="text-muted">&copy; My Yii Application <?= date('Y') ?></span>
+                </div>
+            </footer>
+        </div>
+    </div>
 </div>
 
-<footer class="footer mt-auto py-3 bg-light">
-    <div class="container">
-        <span class="text-muted">&copy; My Yii Application <?= date('Y') ?></span>
-    </div>
-</footer>
-
 <?php $this->endBody() ?>
+<!-- Подключение Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
 <?php $this->endPage() ?>

@@ -130,36 +130,7 @@ class SiteController extends Controller
 
     
 
-    public function actionAllLots()
-    {
-        $query = Lot::find();
-
-        // Получаем значение поиска из запроса
-        $search = Yii::$app->request->get('search');
-        if ($search) {
-            $query->andFilterWhere(['or',
-                ['like', 'vin', $search],
-                ['like', 'lot', $search],
-                ['like', 'auto', $search],
-            ]);
-        }
-
-        // Создаем объект пагинации
-        $pagination = new Pagination([
-            'defaultPageSize' => 2,
-            'totalCount' => $query->count(),
-        ]);
-
-        $lots = $query->offset($pagination->offset)
-            ->limit($pagination->limit)
-            ->all();
-
-        return $this->render('all_lots', [
-            'lots' => $lots,
-            'pagination' => $pagination,
-            'search' => $search, // Передаем значение поиска в представление
-        ]);
-    }
+    
 
     public function actionViewPhotos($id)
 {
@@ -173,4 +144,199 @@ class SiteController extends Controller
     ]);
 }
 
+public function actionAllLots()
+    {
+        $search = Yii::$app->request->get('search', '');
+        $query = Lot::find();
+
+        if ($search) {
+            $query->andFilterWhere(['like', 'vin', $search])
+                  ->orFilterWhere(['like', 'lot', $search])
+                  ->orFilterWhere(['like', 'auto', $search]);
+        }
+
+        $pagination = new Pagination([
+            'defaultPageSize' => 5,
+            'totalCount' => $query->count(),
+        ]);
+
+        $lots = $query->orderBy('id')
+            ->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+
+        return $this->render('all_lots', [
+            'lots' => $lots,
+            'pagination' => $pagination,
+            'search' => $search,
+        ]);
+    }
+
+    public function actionNew()
+    {
+        $search = Yii::$app->request->get('search', '');
+        $query = Lot::find()->where(['status' => 'new']);
+
+        if ($search) {
+            $query->andFilterWhere(['like', 'vin', $search])
+                  ->orFilterWhere(['like', 'lot', $search])
+                  ->orFilterWhere(['like', 'auto', $search]);
+        }
+
+        $pagination = new Pagination([
+            'defaultPageSize' => 10,
+            'totalCount' => $query->count(),
+        ]);
+
+        $lots = $query->orderBy('id')
+            ->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+
+        return $this->render('new', [
+            'lots' => $lots,
+            'pagination' => $pagination,
+            'search' => $search,
+        ]);
+    }
+
+    public function actionUnloaded()
+    {
+        $search = Yii::$app->request->get('search', '');
+        $query = Lot::find()->where(['status' => 'unloaded']);
+
+        if ($search) {
+            $query->andFilterWhere(['like', 'vin', $search])
+                  ->orFilterWhere(['like', 'lot', $search])
+                  ->orFilterWhere(['like', 'auto', $search]);
+        }
+
+        $pagination = new Pagination([
+            'defaultPageSize' => 10,
+            'totalCount' => $query->count(),
+        ]);
+
+        $lots = $query->orderBy('id')
+            ->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+
+        return $this->render('unloaded', [
+            'lots' => $lots,
+            'pagination' => $pagination,
+            'search' => $search,
+        ]);
+    }
+
+    public function actionDispatched()
+    {
+        $search = Yii::$app->request->get('search', '');
+        $query = Lot::find()->where(['status' => 'dispatched']);
+
+        if ($search) {
+            $query->andFilterWhere(['like', 'vin', $search])
+                  ->orFilterWhere(['like', 'lot', $search])
+                  ->orFilterWhere(['like', 'auto', $search]);
+        }
+
+        $pagination = new Pagination([
+            'defaultPageSize' => 10,
+            'totalCount' => $query->count(),
+        ]);
+
+        $lots = $query->orderBy('id')
+            ->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+
+        return $this->render('dispatched', [
+            'lots' => $lots,
+            'pagination' => $pagination,
+            'search' => $search,
+        ]);
+    }
+
+    public function actionTerminal()
+    {
+        $search = Yii::$app->request->get('search', '');
+        $query = Lot::find()->where(['status' => 'terminal']);
+
+        if ($search) {
+            $query->andFilterWhere(['like', 'vin', $search])
+                  ->orFilterWhere(['like', 'lot', $search])
+                  ->orFilterWhere(['like', 'auto', $search]);
+        }
+
+        $pagination = new Pagination([
+            'defaultPageSize' => 10,
+            'totalCount' => $query->count(),
+        ]);
+
+        $lots = $query->orderBy('id')
+            ->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+
+        return $this->render('terminal', [
+            'lots' => $lots,
+            'pagination' => $pagination,
+            'search' => $search,
+        ]);
+    }
+
+    public function actionLoading()
+    {
+        $search = Yii::$app->request->get('search', '');
+        $query = Lot::find()->where(['status' => 'loading']);
+
+        if ($search) {
+            $query->andFilterWhere(['like', 'vin', $search])
+                  ->orFilterWhere(['like', 'lot', $search])
+                  ->orFilterWhere(['like', 'auto', $search]);
+        }
+
+        $pagination = new Pagination([
+            'defaultPageSize' => 10,
+            'totalCount' => $query->count(),
+        ]);
+
+        $lots = $query->orderBy('id')
+            ->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+
+        return $this->render('loading', [
+            'lots' => $lots,
+            'pagination' => $pagination,
+            'search' => $search,
+        ]);
+    }
+
+    public function actionShipped()
+    {
+        $search = Yii::$app->request->get('search', '');
+        $query = Lot::find()->where(['status' => 'shipped']);
+
+        if ($search) {
+            $query->andFilterWhere(['like', 'vin', $search])
+                  ->orFilterWhere(['like', 'lot', $search])
+                  ->orFilterWhere(['like', 'auto', $search]);
+        }
+
+        $pagination = new Pagination([
+            'defaultPageSize' => 5,
+            'totalCount' => $query->count(),
+        ]);
+
+        $lots = $query->orderBy('id')
+            ->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+
+        return $this->render('shipped', [
+            'lots' => $lots,
+            'pagination' => $pagination,
+            'search' => $search,
+        ]);
+    }
 }

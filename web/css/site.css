@@ -86,3 +86,159 @@ a.desc:after {
 .form-group {
     margin-bottom: 1rem;
 }
+
+.content-wrapper {
+    display: flex;
+    min-height: 100vh; /* Обеспечивает, что контент занимает всю высоту экрана */
+    flex-direction: column;
+}
+
+.sidebar {
+    width: 250px; /* Ширина сайдбара */
+    background-color: #f8f9fa; /* Цвет фона сайдбара */
+    min-height: 100vh; /* Обеспечивает, что сайдбар занимает всю высоту экрана */
+    transition: width 0.3s; /* Плавный переход для ширины */
+}
+.sidebar.collapsed {
+    width: 0; /* Скрытие сайдбара */
+}
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+    transition: margin-left 0.3s; /* Плавный переход для отступа */
+
+}
+
+.footer {
+    margin-left: 250px; /* Та же ширина, что и у сайдбара */
+    background-color: #f8f9fa; /* Цвет фона футера */
+    transition: margin-left 0.3s; /* Плавный переход для отступа */
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+main > .container {
+    padding: 70px 15px 20px;
+}
+
+.footer {
+    background-color: #f5f5f5;
+    font-size: .9em;
+    height: 60px;
+    margin-left: 250px; /* Та же ширина, что и у сайдбара */
+    transition: margin-left 0.3s; /* Плавный переход для отступа */
+}
+
+.footer > .container {
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+.not-set {
+    color: #c55;
+    font-style: italic;
+}
+
+/* add sorting icons to gridview sort links */
+a.asc:after, a.desc:after {
+    content: '';
+    left: 3px;
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border: solid 5px transparent;
+    margin: 4px 4px 2px 4px;
+    background: transparent;
+}
+
+a.asc:after {
+    border-bottom: solid 7px #212529;
+    border-top-width: 0;
+}
+
+a.desc:after {
+    border-top: solid 7px #212529;
+    border-bottom-width: 0;
+}
+
+.grid-view th {
+    white-space: nowrap;
+}
+
+.hint-block {
+    display: block;
+    margin-top: 5px;
+    color: #999;
+}
+
+.error-summary {
+    color: #a94442;
+    background: #fdf7f7;
+    border-left: 3px solid #eed3d7;
+    padding: 10px 20px;
+    margin: 0 0 15px 0;
+}
+
+/* align the logout "link" (button in form) of the navbar */
+.nav li > form > button.logout {
+    padding-top: 7px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+@media(max-width:767px) {
+    .nav li > form > button.logout {
+        display: block;
+        text-align: left;
+        width: 100%;
+        padding: 10px 0;
+    }
+}
+
+.nav > li > form > button.logout:focus,
+.nav > li > form > button.logout:hover {
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.nav > li > form > button.logout:focus {
+    outline: none;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.content-wrapper {
+    display: flex;
+    min-height: 100vh; /* Обеспечивает, что контент занимает всю высоту экрана */
+    flex-direction: column;
+}
+
+.main-content-wrapper {
+    display: flex;
+    flex-grow: 1;
+}
+
+.sidebar {
+    width: 250px; /* Ширина сайдбара */
+    background-color: #f8f9fa; /* Цвет фона сайдбара */
+    min-height: 100vh; /* Обеспечивает, что сайдбар занимает всю высоту экрана */
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+}
+
+.footer {
+    margin-left: 250px; /* Та же ширина, что и у сайдбара */
+    background-color: #f8f9fa; /* Цвет фона футера */
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
