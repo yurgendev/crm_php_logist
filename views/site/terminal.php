@@ -55,10 +55,10 @@ $this->title = 'Terminal Lots';
                             <td><?= $lot->has_keys ? Html::a('<i class="fas fa-check"></i>', ['site/view-photos', 'id' => $lot->id], ['target' => '_blank']) : '' ?></td>
                             <td><?= $lot->bos ? Html::a('<i class="fas fa-check"></i>', ['site/view-photos', 'id' => $lot->id], ['target' => '_blank']) : '' ?></td>
                             <td><?= $lot->title ? Html::a('<i class="fas fa-check"></i>', ['site/view-photos', 'id' => $lot->id], ['target' => '_blank']) : '' ?></td>
-                            <td><?= $lot->photo_a ? Html::a('<i class="fas fa-check"></i>', ['site/view-photos', 'id' => $lot->id], ['target' => '_blank']) : '' ?></td>
-                            <td><?= $lot->photo_d ? Html::a('<i class="fas fa-check"></i>', ['site/view-photos', 'id' => $lot->id], ['target' => '_blank']) : '' ?></td>
-                            <td><?= $lot->photo_w ? Html::a('<i class="fas fa-check"></i>', ['site/view-photos', 'id' => $lot->id], ['target' => '_blank']) : '' ?></td>
-                            <td><?= $lot->photo_l ? Html::a('<i class="fas fa-check"></i>', ['site/view-photos', 'id' => $lot->id], ['target' => '_blank']) : '' ?></td>
+                            <td><?= $lot->photo_a ? Html::a('<i class="fas fa-check"></i>', ['site/gallery', 'id' => $lot->id, 'type' => 'a'], ['target' => '_blank']) : '' ?></td>
+                            <td><?= $lot->photo_d ? Html::a('<i class="fas fa-check"></i>', ['site/gallery', 'id' => $lot->id, 'type' => 'd'], ['target' => '_blank']) : '' ?></td>
+                            <td><?= $lot->photo_w ? Html::a('<i class="fas fa-check"></i>', ['site/gallery', 'id' => $lot->id, 'type' => 'w'], ['target' => '_blank']) : '' ?></td>
+                            <td><?= $lot->photo_l ? Html::a('<i class="fas fa-check"></i>', ['site/gallery', 'id' => $lot->id, 'type' => 'l'], ['target' => '_blank']) : '' ?></td>
                             <td><?= $lot->video ? Html::a('<i class="fas fa-check"></i>', ['site/view-photos', 'id' => $lot->id], ['target' => '_blank']) : '' ?></td>
                         </tr>
                     <?php endif; ?>

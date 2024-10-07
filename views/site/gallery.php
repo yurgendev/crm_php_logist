@@ -4,9 +4,9 @@
 /* @var $lot app\models\Lot */
 /* @var $type string */
 
-$this->title = 'Gallery for Lot ' . $lot->id . ' - ' . strtoupper($type);
+$this->title = 'Photo' . ' - ' . strtoupper($type);
 ?>
-<h1>Gallery for Lot <?= $lot->id ?> - <?= strtoupper($type) ?></h1>
+<h1>Photo  - <?= strtoupper($type) ?></h1>
 
 <div class="gallery">
     <?php foreach ($images as $image): ?>
