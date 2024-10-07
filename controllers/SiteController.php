@@ -11,6 +11,9 @@ use app\models\LoginForm;
 use app\models\ContactForm;
 use app\models\Lot;
 use yii\data\Pagination;
+use yii\web\NotFoundHttpException;
+use yii\helpers\FileHelper;
+
 
 class SiteController extends Controller
 {
@@ -132,17 +135,30 @@ class SiteController extends Controller
 
     
 
-    public function actionViewPhotos($id)
-{
-    $lot = Lot::findOne($id);
-    if (!$lot) {
-        throw new \yii\web\NotFoundHttpException('Lot not found.');
-    }
+    public function actionGallery($id, $type)
+    {
+        $lot = Lot::findOne($id);
+        if (!$lot) {
+            throw new NotFoundHttpException('Lot not found.');
+        }
 
-    return $this->render('view_photos', [
-        'lot' => $lot,
-    ]);
-}
+        $directories = [
+            'a' => 'uploads/photo_a',
+            'd' => 'uploads/photo_d',
+            'w' => 'uploads/photo_w',
+            'l' => 'uploads/photo_l',
+        ];
+
+        if (!isset($directories[$type])) {
+            throw new NotFoundHttpException('Invalid type specified.');
+        }
+
+        // Получаем путь к изображениям из соответствующего поля модели Lot
+        $imagesField = 'photo_' . $type;
+        $images = explode(',', $lot->$imagesField);
+
+        return $this->render('gallery', ['images' => $images, 'lot' => $lot, 'type' => $type]);
+    }
 
 public function actionAllLots()
     {
@@ -339,4 +355,6 @@ public function actionAllLots()
             'search' => $search,
         ]);
     }
+
+
 }

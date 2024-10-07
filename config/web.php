@@ -47,6 +47,7 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                'gallery/<id:\d+>/<type:[adwl]>' => 'site/gallery',
             ],
         ],
     ],
