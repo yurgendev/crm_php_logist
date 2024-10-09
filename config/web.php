@@ -22,6 +22,7 @@ $config = [
         'user' => [
             'identityClass' => 'app\models\User',
             'enableAutoLogin' => true,
+            'loginUrl' => ['site/login'],
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
@@ -47,8 +48,15 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                'gallery/<id:\d+>/<type:[adwl]>' => 'site/gallery',
-            ],
+            '' => 'site/index',
+            '<action:(login|logout)>' => 'site/<action>',
+            'users' => 'user/index',
+            'user/create' => 'user/create',
+            'user/update/<id:\d+>' => 'user/update',
+            'user/delete/<id:\d+>' => 'user/delete',
+            'admin' => 'admin/default/index', // Обновите этот маршрут
+            'admin/<controller:\w+>/<action:\w+>' => 'admin/<controller>/<action>', // Добавьте это правило
+        ],
         ],
     ],
     'modules' => [

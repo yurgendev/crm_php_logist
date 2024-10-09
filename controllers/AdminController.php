@@ -1,11 +1,11 @@
 <?php
-namespace app\modules\admin\controllers;
+namespace app\controllers;
 
 use Yii;
 use yii\web\Controller;
 use yii\filters\AccessControl;
 
-class DefaultController extends Controller
+class AdminController extends Controller
 {
     public function behaviors()
     {

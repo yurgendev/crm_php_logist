@@ -5,6 +5,7 @@
 
 use yii\bootstrap5\Html;
 use app\assets\AppAsset;
+use yii\bootstrap5\ActiveForm;
 
 AppAsset::register($this);
 ?>
@@ -25,14 +26,23 @@ AppAsset::register($this);
 <body>
 <?php $this->beginBody() ?>
 
-<div class="container-fluid px-0 bg-light">
+<<div class="container-fluid px-0 bg-light">
     <div class="row no-gutters">
         <div class="col-md-2 d-flex align-items-center justify-content-between sidebar-header" id="navbar">
             <div>
                 <a class="text-decoration-none fs14 ps-2" href="#">logic magic<span class="fs13 pe-2">.com</span></a>
             </div>
-            <span class="far fa-user-circle"></span>
+            <div class="ml-auto logout-form">
+                <?php $form = ActiveForm::begin(['action' => ['site/logout'], 'method' => 'post']); ?>
+                    <?= Html::submitButton('<span class="far fa-user-circle"></span>', [
+                        'class' => 'btn btn-link',
+                        'style' => 'padding: 0; border: none; background: none;',
+                    ]) ?>
+                <?php ActiveForm::end(); ?>
+            </div>
         </div>
+    </div>
+</div>
         <div class="col-md-10 d-flex justify-content-end pe-4" id="navbar2">
             
         </div>
