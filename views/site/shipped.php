@@ -52,15 +52,15 @@ $this->title = 'Shipped Lots';
                             <td><?= Html::encode($lot->customer->name) ?></td>
                             <td><?= Html::encode($lot->warehouse->name) ?></td>
                             <td><?= Html::encode($lot->lot) ?></td>
-                            <td><?= $lot->has_keys ? Html::a('<i class="fas fa-check"></i>', ['site/view-photos', 'id' => $lot->id], ['target' => '_blank']) : '' ?></td>
-                            <td><?= $lot->bos ? Html::a('<i class="fas fa-check"></i>', ['site/view-photos', 'id' => $lot->id], ['target' => '_blank']) : '' ?></td>
-                            <td><?= $lot->title ? Html::a('<i class="fas fa-check"></i>', ['site/view-photos', 'id' => $lot->id], ['target' => '_blank']) : '' ?></td>
+                            <td><?= $lot->has_keys ? '<i class="fas fa-check"></i>' : '' ?></td>                        
+                            <td><?= $lot->bos ? Html::a('<i class="fas fa-check"></i>', ['site/view-pdf', 'id' => $lot->id, 'type' => 'bos'], ['target' => '_blank']) : '' ?></td>
+                        <td><?= $lot->title ? Html::a('<i class="fas fa-check"></i>', ['site/view-pdf', 'id' => $lot->id, 'type' => 'title'], ['target' => '_blank']) : '' ?></td>
                             <td><?= $lot->photo_a ? Html::a('<i class="fas fa-check"></i>', ['site/gallery', 'id' => $lot->id, 'type' => 'a'], ['target' => '_blank']) : '' ?></td>
                             <td><?= $lot->photo_d ? Html::a('<i class="fas fa-check"></i>', ['site/gallery', 'id' => $lot->id, 'type' => 'd'], ['target' => '_blank']) : '' ?></td>
                             <td><?= $lot->photo_w ? Html::a('<i class="fas fa-check"></i>', ['site/gallery', 'id' => $lot->id, 'type' => 'w'], ['target' => '_blank']) : '' ?></td>
                             <td><?= $lot->photo_l ? Html::a('<i class="fas fa-check"></i>', ['site/gallery', 'id' => $lot->id, 'type' => 'l'], ['target' => '_blank']) : '' ?></td>
-                            <td><?= $lot->video ? Html::a('<i class="fas fa-check"></i>', ['site/view-photos', 'id' => $lot->id], ['target' => '_blank']) : '' ?></td>
-                        </tr>
+                            <td><?= $lot->video ? '<i class="fas fa-check"></i>' : '' ?></td>
+                            </tr>
                     <?php endif; ?>
                 <?php endforeach; ?>
             </tbody>

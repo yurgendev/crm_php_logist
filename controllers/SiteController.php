@@ -12,7 +12,7 @@ use app\models\ContactForm;
 use app\models\Lot;
 use yii\data\Pagination;
 use yii\web\NotFoundHttpException;
-use yii\helpers\FileHelper;
+
 
 
 class SiteController extends Controller
@@ -356,5 +356,32 @@ public function actionAllLots()
         ]);
     }
 
+
+    public function actionViewPdf($id, $type)
+    {
+        $lot = Lot::findOne($id);
+        if (!$lot) {
+            throw new NotFoundHttpException('Lot not found.');
+        }
+
+        $pdfFields = [
+            'bos' => 'bos',
+            'title' => 'title',
+        ];
+
+        if (!isset($pdfFields[$type])) {
+            throw new NotFoundHttpException('Invalid type specified.');
+        }
+
+        // Получаем путь к PDF файлу из соответствующего поля модели Lot
+        $pdfField = $pdfFields[$type];
+        $pdfFile = $lot->$pdfField;
+
+        if (!$pdfFile || !file_exists($pdfFile)) {
+            throw new NotFoundHttpException('File not found.');
+        }
+
+        return $this->render('view-pdf', ['pdfFile' => $pdfFile, 'lot' => $lot, 'type' => $type]);
+    }
 
 }

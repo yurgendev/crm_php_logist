@@ -18,9 +18,7 @@ AppAsset::register($this);
     <title><?= Html::encode($this->title) ?></title>
     <?= Html::csrfMetaTags() ?>
     <?php $this->head() ?>
-    <!-- Подключение Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <!-- Подключение пользовательского CSS -->
     <link rel="stylesheet" href="<?= Yii::$app->request->baseUrl ?>/css/site.css">
     <link rel="stylesheet" href="<?= Yii::$app->request->baseUrl ?>/css/custom.css">
 </head>
@@ -36,7 +34,7 @@ AppAsset::register($this);
             <span class="far fa-user-circle"></span>
         </div>
         <div class="col-md-10 d-flex justify-content-end pe-4" id="navbar2">
-            <!-- Удалено, так как иконка перемещена -->
+            
         </div>
     </div>
     <div class="row no-gutters">
