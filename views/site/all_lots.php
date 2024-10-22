@@ -2,10 +2,13 @@
 use yii\widgets\LinkPager;
 use yii\helpers\Html;
 use yii\helpers\Url;
+
 /** @var yii\web\View $this */
 /** @var app\models\Lot[] $lots */
 /** @var yii\data\Pagination $pagination */
 /** @var string $search */
+/** @var array $statuses */
+/** @var string $selectedStatus */
 
 $this->title = 'All Lots';
 ?>
@@ -14,7 +17,7 @@ $this->title = 'All Lots';
 
     <!-- Форма поиска -->
     <form method="get" action="<?= Url::to(['site/all-lots']) ?>" class="mb-3">
-        <div class="input-group">
+        <div class="input-group mb-3">
             <input type="text" class="form-control" placeholder="Type VIN, Lot or Auto" name="search" value="<?= Html::encode($search) ?>">
             <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
         </div>
@@ -24,7 +27,16 @@ $this->title = 'All Lots';
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Status</th>
+                    <th>Status
+                        <form method="get" action="<?= Url::to(['site/all-lots']) ?>" class="d-inline">
+                            <select class="form-select form-select-sm" name="status" onchange="this.form.submit()">
+                                <option value="">All</option>
+                                <?php foreach ($statuses as $key => $value): ?>
+                                    <option value="<?= Html::encode($key) ?>" <?= $selectedStatus === $key ? 'selected' : '' ?>><?= Html::encode($value) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </form>
+                    </th>
                     <th>Auto</th>
                     <th>VIN</th>
                     <th>Company</th>
@@ -59,6 +71,7 @@ $this->title = 'All Lots';
                         <td><?= $lot->photo_w ? Html::a('<i class="fas fa-check"></i>', ['site/gallery', 'id' => $lot->id, 'type' => 'w'], ['target' => '_blank']) : '' ?></td>
                         <td><?= $lot->photo_l ? Html::a('<i class="fas fa-check"></i>', ['site/gallery', 'id' => $lot->id, 'type' => 'l'], ['target' => '_blank']) : '' ?></td>
                         <td><?= $lot->video ? '<i class="fas fa-check"></i>' : '' ?></td>
+                    </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>

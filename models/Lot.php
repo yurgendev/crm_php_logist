@@ -59,9 +59,31 @@ class Lot extends \yii\db\ActiveRecord
     public $titleFiles;
     public $photoLFiles;
 
+    const STATUS_NEW = 'new';
+    const STATUS_DISPATCHED = 'dispatched';
+    const STATUS_TERMINAL = 'terminal';
+    const STATUS_LOADING = 'loading';
+    const STATUS_SHIPPED = 'shipped';
+    const STATUS_UNLOADED = 'unloaded';
+    const STATUS_ARCHIVED = 'archived';
+
+
     public static function tableName()
     {
         return 'Lot';
+    }
+
+    public static function getStatuses()
+    {
+        return [
+            self::STATUS_NEW => 'New',
+            self::STATUS_DISPATCHED => 'Dispatched',
+            self::STATUS_TERMINAL => 'Terminal',
+            self::STATUS_LOADING => 'Loading',
+            self::STATUS_SHIPPED => 'Shipped',
+            self::STATUS_UNLOADED => 'Unloaded',
+            self::STATUS_ARCHIVED => 'Archived',
+        ];
     }
 
     /**
@@ -74,7 +96,7 @@ class Lot extends \yii\db\ActiveRecord
             [['bosFiles', 'photoAFiles', 'photoDFiles', 'photoWFiles', 'videoFiles', 'titleFiles', 'photoLFiles'], 'file', 'maxFiles' => 25],
             [['account_id', 'auction_id', 'customer_id', 'warehouse_id', 'company_id', 'has_keys'], 'integer'],
             [['price'], 'number'],
-            [['status_changed', 'date_purchase', 'date_warehouse', 'payment_date', 'date_booking', 'data_container', 'date_unloaded', 'ata_data'], 'safe'],
+            [['status_changed', 'date_purchase', 'date_warehouse', 'payment_date', 'date_booking', 'date_container', 'date_unloaded', 'ata_data'], 'safe'],
             [['bos', 'photo_a', 'photo_d', 'photo_w', 'video', 'title', 'photo_l', 'auto', 'lot', 'line', 'booking_number', 'container'], 'string', 'max' => 255],
             [['vin'], 'string', 'max' => 255],
             [['url'], 'string', 'max' => 200],
@@ -85,7 +107,65 @@ class Lot extends \yii\db\ActiveRecord
             [['customer_id'], 'exist', 'skipOnError' => true, 'targetClass' => Customer::class, 'targetAttribute' => ['customer_id' => 'id']],
             [['warehouse_id'], 'exist', 'skipOnError' => true, 'targetClass' => Warehouse::class, 'targetAttribute' => ['warehouse_id' => 'id']],
             [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => Company::class, 'targetAttribute' => ['company_id' => 'id']],
+            [['status'], 'validateStatusTransition'], 
         ];
+    }
+
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        $scenarios[self::STATUS_NEW] = ['status', 'payment_date'];
+        $scenarios[self::STATUS_DISPATCHED] = ['status', 'date_warehouse'];
+        $scenarios[self::STATUS_TERMINAL] = ['status', 'date_booking'];
+        $scenarios[self::STATUS_LOADING] = ['status', 'date_container'];
+        $scenarios[self::STATUS_SHIPPED] = ['status', 'date_unloaded'];
+        $scenarios[self::STATUS_UNLOADED] = ['status'];
+        return $scenarios;
+    }
+
+    public function validateStatusTransition($attribute, $params)
+    {
+        switch ($this->status) {
+            case self::STATUS_DISPATCHED:
+                if (empty($this->payment_date)) {
+                    $this->addError('payment_date', 'Payment date must be set to transition to dispatched.');
+                }
+                break;
+            case self::STATUS_TERMINAL:
+                if (empty($this->date_warehouse)) {
+                    $this->addError('date_warehouse', 'Warehouse date must be set to transition to terminal.');
+                }
+                break;
+            case self::STATUS_LOADING:
+                if (empty($this->date_booking)) {
+                    $this->addError('date_booking', 'Booking date must be set to transition to loading.');
+                }
+                break;
+            case self::STATUS_SHIPPED:
+                if (empty($this->date_container)) {
+                    $this->addError('date_container', 'Container date must be set to transition to shipped.');
+                }
+                break;
+            case self::STATUS_UNLOADED:
+                if (empty($this->date_unloaded)) {
+                    $this->addError('date_unloaded', 'Unloaded date must be set to transition to unloaded.');
+                }
+                break;
+        }
+    }
+
+    public function beforeSave($insert)
+    {
+        if (parent::beforeSave($insert)) {
+            if ($this->isAttributeChanged('status')) {
+                $this->setScenario($this->status);
+                if (!$this->validate()) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -232,4 +312,8 @@ class Lot extends \yii\db\ActiveRecord
         }
         return count(explode(',', $files));
     }
+
+    
+    
+
 }

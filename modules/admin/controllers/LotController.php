@@ -57,10 +57,14 @@ class LotController extends Controller
         if ($dataProvider->query instanceof \yii\db\ActiveQuery) {
             $dataProvider->query->with(['account', 'auction', 'customer', 'warehouse', 'company']);
         }
+        
+        $statuses = Lot::getStatuses();
+
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'statuses' => $statuses,
         ]);
     }
 
@@ -145,12 +149,9 @@ class LotController extends Controller
                 $model->save(false); // Сохраняем модель без валидации, так как данные уже валидированы
 
                 return $this->redirect(['view', 'id' => $model->id]);
-            } else {
-                Yii::error('Ошибка сохранения модели: ' . json_encode($model->errors));
-                // Вывод ошибок валидации
-                var_dump($model->errors);
-                die();
-            }
+        } else {
+            Yii::$app->session->setFlash('error', 'Ошибка сохранения модели: ' . json_encode($model->errors));
+        }
         }
 
         // Получаем данные для выпадающих списков
@@ -170,41 +171,6 @@ class LotController extends Controller
             'warehouses' => $warehouses,
             'statuses' => $statuses,
         ]);
-    }
-
-
-    protected function mergeFilePaths($existingPaths, $newPaths)
-    {
-        $existingPathsArray = $existingPaths ? explode(',', $existingPaths) : [];
-        $mergedPathsArray = array_merge($existingPathsArray, $newPaths);
-        return implode(',', $mergedPathsArray);
-    }
-    /**
-     * Получает статусы из базы данных.
-     * @return array
-     */
-    protected function saveFiles($files, $directory)
-    {
-        $filePaths = [];
-        foreach ($files as $file) {
-            $uniqueName = md5($file->baseName . time()) . '.' . $file->extension;
-            $filePath = $directory . '/' . $uniqueName;
-            if (!is_dir($directory)) {
-                mkdir($directory, 0777, true);
-            }
-            if ($file->saveAs($filePath)) {
-                $filePaths[] = $filePath;
-            }
-        }
-        return $filePaths; // Возвращаем массив путей к файлам
-    }
-    protected function getStatuses()
-    {
-        $tableSchema = Yii::$app->db->schema->getTableSchema('lot');
-        $column = $tableSchema->columns['status'];
-        $enumValues = $column->enumValues;
-
-        return array_combine($enumValues, $enumValues);
     }
 
     /**
@@ -235,5 +201,37 @@ class LotController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    protected function mergeFilePaths($existingPaths, $newPaths)
+    {
+        $existingPathsArray = $existingPaths ? explode(',', $existingPaths) : [];
+        $mergedPathsArray = array_merge($existingPathsArray, $newPaths);
+        return implode(',', $mergedPathsArray);
+    }
+
+    protected function saveFiles($files, $directory)
+    {
+        $filePaths = [];
+        foreach ($files as $file) {
+            $uniqueName = md5($file->baseName . time()) . '.' . $file->extension;
+            $filePath = $directory . '/' . $uniqueName;
+            if (!is_dir($directory)) {
+                mkdir($directory, 0777, true);
+            }
+            if ($file->saveAs($filePath)) {
+                $filePaths[] = $filePath;
+            }
+        }
+        return $filePaths; // Возвращаем массив путей к файлам
+    }
+
+    protected function getStatuses()
+    {
+        $tableSchema = Yii::$app->db->schema->getTableSchema('lot');
+        $column = $tableSchema->columns['status'];
+        $enumValues = $column->enumValues;
+
+        return array_combine($enumValues, $enumValues);
     }
 }

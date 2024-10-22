@@ -154,31 +154,44 @@ class SiteController extends Controller
         return $this->render('gallery', ['images' => $images, 'lot' => $lot, 'type' => $type]);
     }
 
-public function actionAllLots()
+    public function actionAllLots()
     {
-        $search = Yii::$app->request->get('search', '');
         $query = Lot::find();
 
+        // Фильтрация по статусу
+        $status = Yii::$app->request->get('status');
+        if ($status) {
+            $query->andWhere(['status' => $status]);
+        }
+
+        // Поиск по VIN, Lot или Auto
+        $search = Yii::$app->request->get('search');
         if ($search) {
-            $query->andFilterWhere(['like', 'vin', $search])
-                  ->orFilterWhere(['like', 'lot', $search])
-                  ->orFilterWhere(['like', 'auto', $search]);
+            $query->andWhere(['or',
+                ['like', 'vin', $search],
+                ['like', 'lot', $search],
+                ['like', 'auto', $search],
+            ]);
         }
 
         $pagination = new Pagination([
-            'defaultPageSize' => 5,
+            'defaultPageSize' => 10,
             'totalCount' => $query->count(),
         ]);
 
-        $lots = $query->orderBy('id')
-            ->offset($pagination->offset)
+        $lots = $query->offset($pagination->offset)
             ->limit($pagination->limit)
             ->all();
+
+        // Получаем все возможные статусы
+        $statuses = Lot::getStatuses();
 
         return $this->render('all_lots', [
             'lots' => $lots,
             'pagination' => $pagination,
             'search' => $search,
+            'statuses' => $statuses,
+            'selectedStatus' => $status,
         ]);
     }
 
