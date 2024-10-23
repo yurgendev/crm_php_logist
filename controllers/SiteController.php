@@ -196,7 +196,7 @@ class SiteController extends Controller
         }
 
         $pagination = new Pagination([
-            'defaultPageSize' => 10,
+            'defaultPageSize' => 5,
             'totalCount' => $query->count(),
         ]);
 
