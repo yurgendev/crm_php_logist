@@ -9,6 +9,12 @@ use yii\helpers\Url;
 /** @var string $search */
 /** @var array $statuses */
 /** @var string $selectedStatus */
+/** @var array $customers */
+/** @var string $selectedCustomer */
+/** @var array $warehouses */
+/** @var string $selectedWarehouse */
+/** @var array $companies */
+/** @var string $selectedCompany */
 
 $this->title = 'All Lots';
 ?>
@@ -39,9 +45,39 @@ $this->title = 'All Lots';
                     </th>
                     <th>Auto</th>
                     <th>VIN</th>
-                    <th>Company</th>
-                    <th>Customer</th>
-                    <th>Warehouse</th>
+                    <th>
+                        Company
+                        <form method="get" action="<?= Url::to(['site/all-lots']) ?>" class="d-inline">
+                            <select class="form-select form-select-sm" name="company_id" onchange="this.form.submit()">
+                                <option value="">All</option>
+                                <?php foreach ($companies as $company): ?>
+                                    <option value="<?= Html::encode($company->id) ?>" <?= $selectedCompany == $company->id ? 'selected' : '' ?>><?= Html::encode($company->name) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </form>
+                    </th>
+                    <th>
+                        Customer
+                        <form method="get" action="<?= Url::to(['site/all-lots']) ?>" class="d-inline">
+                            <select class="form-select form-select-sm" name="customer_id" onchange="this.form.submit()">
+                                <option value="">All</option>
+                                <?php foreach ($customers as $customer): ?>
+                                    <option value="<?= Html::encode($customer->id) ?>" <?= $selectedCustomer == $customer->id ? 'selected' : '' ?>><?= Html::encode($customer->name) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </form>
+                    </th>
+                    <th>
+                        Warehouse
+                        <form method="get" action="<?= Url::to(['site/all-lots']) ?>" class="d-inline">
+                            <select class="form-select form-select-sm" name="warehouse_id" onchange="this.form.submit()">
+                                <option value="">All</option>
+                                <?php foreach ($warehouses as $warehouse): ?>
+                                    <option value="<?= Html::encode($warehouse->id) ?>" <?= $selectedWarehouse == $warehouse->id ? 'selected' : '' ?>><?= Html::encode($warehouse->name) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </form>
+                    </th>
                     <th>LOT</th>
                     <th>Keys</th>
                     <th>BOS</th>
