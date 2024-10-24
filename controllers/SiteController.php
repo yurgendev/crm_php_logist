@@ -15,6 +15,8 @@ use yii\web\NotFoundHttpException;
 use app\models\Customer;
 use app\models\Warehouse;
 use app\models\Company;
+use yii\helpers\FileHelper;
+use yii\imagine\Image;
 
 
 
@@ -133,28 +135,62 @@ class SiteController extends Controller
     
 
     public function actionGallery($id, $type)
-    {
-        $lot = Lot::findOne($id);
-        if (!$lot) {
-            throw new NotFoundHttpException('Lot not found.');
-        }
+{
+    $lot = Lot::findOne($id);
+    if (!$lot) {
+        throw new NotFoundHttpException('Lot not found.');
+    }
 
-        $directories = [
-            'a' => 'uploads/photo_a',
-            'd' => 'uploads/photo_d',
-            'w' => 'uploads/photo_w',
-            'l' => 'uploads/photo_l',
+    $directories = [
+        'a' => 'uploads/photo_a',
+        'd' => 'uploads/photo_d',
+        'w' => 'uploads/photo_w',
+        'l' => 'uploads/photo_l',
+    ];
+
+    if (!isset($directories[$type])) {
+        throw new NotFoundHttpException('Invalid type specified.');
+    }
+
+    // Получаем изображения из соответствующего поля модели Lot
+    $imagesField = 'photo_' . $type;
+    $images = explode(',', $lot->$imagesField);
+
+    // Создаем миниатюры и добавляем дату и время загрузки
+    $thumbnails = [];
+    foreach ($images as $image) {
+        $thumbnailPath = 'uploads/thumbnails/' . basename($image);
+        $fullImagePath = Yii::getAlias('@webroot/' . $image);
+        if (!file_exists($thumbnailPath)) {
+            FileHelper::createDirectory('uploads/thumbnails');
+            Image::thumbnail($fullImagePath, 200, 200)
+                ->save(Yii::getAlias('@webroot/' . $thumbnailPath), ['quality' => 80]);
+        }
+        $thumbnails[] = [
+            'path' => $thumbnailPath,
+            'uploaded_at' => filemtime($fullImagePath), // Используем время последнего изменения файла
         ];
+    }
 
-        if (!isset($directories[$type])) {
-            throw new NotFoundHttpException('Invalid type specified.');
+    return $this->render('gallery', [
+        'images' => $images,
+        'thumbnails' => $thumbnails,
+        'lot' => $lot,
+        'type' => $type,
+    ]);
+    }
+
+    public function actionDeleteImage($path)
+    {
+        $fullPath = Yii::getAlias('@webroot/' . $path);
+        if (file_exists($fullPath)) {
+            unlink($fullPath);
+            Yii::$app->session->setFlash('success', 'Image deleted successfully.');
+        } else {
+            Yii::$app->session->setFlash('error', 'Image not found.');
         }
 
-        // Получаем путь к изображениям из соответствующего поля модели Lot
-        $imagesField = 'photo_' . $type;
-        $images = explode(',', $lot->$imagesField);
-
-        return $this->render('gallery', ['images' => $images, 'lot' => $lot, 'type' => $type]);
+        return $this->redirect(Yii::$app->request->referrer);
     }
 
     public function actionAllLots()
@@ -426,5 +462,7 @@ class SiteController extends Controller
 
         return $this->render('view-pdf', ['pdfFile' => $pdfFile, 'lot' => $lot, 'type' => $type]);
     }
+
+    
 
 }
