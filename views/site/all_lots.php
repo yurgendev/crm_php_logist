@@ -2,6 +2,7 @@
 use yii\widgets\LinkPager;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\helpers\ArrayHelper;
 
 /** @var yii\web\View $this */
 /** @var app\models\Lot[] $lots */
@@ -15,8 +16,43 @@ use yii\helpers\Url;
 /** @var string $selectedWarehouse */
 /** @var array $companies */
 /** @var string $selectedCompany */
+/** @var string $photoA_filter */
+/** @var string $photoD_filter */
+/** @var string $photoW_filter */
+/** @var string $photoL_filter */
 
 $this->title = 'All Lots';
+
+// Функция для рендеринга формы фильтра
+function renderFilterForm($name, $selectedValue, $options, $excludeFields = []) {
+    $hiddenFields = [
+        'search' => Yii::$app->request->get('search'),
+        'status' => Yii::$app->request->get('status'),
+        'customer_id' => Yii::$app->request->get('customer_id'),
+        'warehouse_id' => Yii::$app->request->get('warehouse_id'),
+        'company_id' => Yii::$app->request->get('company_id'),
+        'photoA_filter' => Yii::$app->request->get('photoA_filter'),
+        'photoD_filter' => Yii::$app->request->get('photoD_filter'),
+        'photoW_filter' => Yii::$app->request->get('photoW_filter'),
+        'photoL_filter' => Yii::$app->request->get('photoL_filter'),
+    ];
+
+    // Убираем текущий фильтр из скрытых полей
+    foreach ($excludeFields as $excludeField) {
+        unset($hiddenFields[$excludeField]);
+    }
+
+    $form = Html::beginForm(['site/all-lots'], 'get', ['class' => 'd-inline']);
+    foreach ($hiddenFields as $fieldName => $fieldValue) {
+        $form .= Html::hiddenInput($fieldName, $fieldValue);
+    }
+    $form .= Html::dropDownList($name, $selectedValue, $options, [
+        'class' => 'form-select form-select-sm',
+        'onchange' => 'this.form.submit()',
+    ]);
+    $form .= Html::endForm();
+    return $form;
+}
 ?>
 <div class="site-all-lots">
     <h1><?= Html::encode($this->title) ?></h1>
@@ -34,59 +70,54 @@ $this->title = 'All Lots';
             <thead>
                 <tr>
                     <th>Status
-                        <form method="get" action="<?= Url::to(['site/all-lots']) ?>" class="d-inline">
-                            <select class="form-select form-select-sm" name="status" onchange="this.form.submit()">
-                                <option value="">All</option>
-                                <?php foreach ($statuses as $key => $value): ?>
-                                    <option value="<?= Html::encode($key) ?>" <?= $selectedStatus === $key ? 'selected' : '' ?>><?= Html::encode($value) ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </form>
+                        <?= renderFilterForm('status', $selectedStatus, ['' => 'All'] + $statuses, ['status']) ?>
                     </th>
                     <th>Auto</th>
                     <th>VIN</th>
                     <th>
                         Company
-                        <form method="get" action="<?= Url::to(['site/all-lots']) ?>" class="d-inline">
-                            <select class="form-select form-select-sm" name="company_id" onchange="this.form.submit()">
-                                <option value="">All</option>
-                                <?php foreach ($companies as $company): ?>
-                                    <option value="<?= Html::encode($company->id) ?>" <?= $selectedCompany == $company->id ? 'selected' : '' ?>><?= Html::encode($company->name) ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </form>
+                        <?= renderFilterForm('company_id', $selectedCompany, ['' => 'All'] + ArrayHelper::map($companies, 'id', 'name'), ['company_id']) ?>
                     </th>
                     <th>
                         Customer
-                        <form method="get" action="<?= Url::to(['site/all-lots']) ?>" class="d-inline">
-                            <select class="form-select form-select-sm" name="customer_id" onchange="this.form.submit()">
-                                <option value="">All</option>
-                                <?php foreach ($customers as $customer): ?>
-                                    <option value="<?= Html::encode($customer->id) ?>" <?= $selectedCustomer == $customer->id ? 'selected' : '' ?>><?= Html::encode($customer->name) ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </form>
+                        <?= renderFilterForm('customer_id', $selectedCustomer, ['' => 'All'] + ArrayHelper::map($customers, 'id', 'name'), ['customer_id']) ?>
                     </th>
                     <th>
                         Warehouse
-                        <form method="get" action="<?= Url::to(['site/all-lots']) ?>" class="d-inline">
-                            <select class="form-select form-select-sm" name="warehouse_id" onchange="this.form.submit()">
-                                <option value="">All</option>
-                                <?php foreach ($warehouses as $warehouse): ?>
-                                    <option value="<?= Html::encode($warehouse->id) ?>" <?= $selectedWarehouse == $warehouse->id ? 'selected' : '' ?>><?= Html::encode($warehouse->name) ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </form>
+                        <?= renderFilterForm('warehouse_id', $selectedWarehouse, ['' => 'All'] + ArrayHelper::map($warehouses, 'id', 'name'), ['warehouse_id']) ?>
                     </th>
-                    <th>LOT</th>
-                    <th>Keys</th>
-                    <th>BOS</th>
-                    <th>Title</th>
-                    <th>Photo A</th>
-                    <th>Photo D</th>
-                    <th>Photo W</th>
-                    <th>Photo L</th>
-                    <th>Video</th>
+                    <th>
+                        Photo A
+                        <?= renderFilterForm('photoA_filter', $photoA_filter, [
+                            '' => 'All',
+                            'Yes' => 'Yes',
+                            'No' => 'No',
+                        ], ['photoA_filter']) ?>
+                    </th>
+                    <th>
+                        Photo D
+                        <?= renderFilterForm('photoD_filter', $photoD_filter, [
+                            '' => 'All',
+                            'Yes' => 'Yes',
+                            'No' => 'No',
+                        ], ['photoD_filter']) ?>
+                    </th>
+                    <th>
+                        Photo W
+                        <?= renderFilterForm('photoW_filter', $photoW_filter, [
+                            '' => 'All',
+                            'Yes' => 'Yes',
+                            'No' => 'No',
+                        ], ['photoW_filter']) ?>
+                    </th>
+                    <th>
+                        Photo L
+                        <?= renderFilterForm('photoL_filter', $photoL_filter, [
+                            '' => 'All',
+                            'Yes' => 'Yes',
+                            'No' => 'No',
+                        ], ['photoL_filter']) ?>
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -98,22 +129,16 @@ $this->title = 'All Lots';
                         <td><?= Html::encode($lot->company->name) ?></td>
                         <td><?= Html::encode($lot->customer->name) ?></td>
                         <td><?= Html::encode($lot->warehouse->name) ?></td>
-                        <td><?= Html::encode($lot->lot) ?></td>
-                        <td><?= $lot->has_keys ? '<i class="fas fa-check"></i>' : '' ?></td>                        
-                        <td><?= $lot->bos ? Html::a('<i class="fas fa-check"></i>', ['site/view-pdf', 'id' => $lot->id, 'type' => 'bos'], ['target' => '_blank']) : '' ?></td>
-                        <td><?= $lot->title ? Html::a('<i class="fas fa-check"></i>', ['site/view-pdf', 'id' => $lot->id, 'type' => 'title'], ['target' => '_blank']) : '' ?></td>
                         <td><?= $lot->photo_a ? Html::a('<i class="fas fa-check"></i>', ['site/gallery', 'id' => $lot->id, 'type' => 'a'], ['target' => '_blank']) : '' ?></td>
                         <td><?= $lot->photo_d ? Html::a('<i class="fas fa-check"></i>', ['site/gallery', 'id' => $lot->id, 'type' => 'd'], ['target' => '_blank']) : '' ?></td>
                         <td><?= $lot->photo_w ? Html::a('<i class="fas fa-check"></i>', ['site/gallery', 'id' => $lot->id, 'type' => 'w'], ['target' => '_blank']) : '' ?></td>
                         <td><?= $lot->photo_l ? Html::a('<i class="fas fa-check"></i>', ['site/gallery', 'id' => $lot->id, 'type' => 'l'], ['target' => '_blank']) : '' ?></td>
-                        <td><?= $lot->video ? '<i class="fas fa-check"></i>' : '' ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
     </div>
 
-    <!-- Пагинация -->
     <div class="pagination-wrapper">
         <?= LinkPager::widget([
             'pagination' => $pagination,

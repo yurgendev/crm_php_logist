@@ -216,34 +216,70 @@ class SiteController extends Controller
 
     public function actionAllLots()
     {
+        // Создаем запрос к модели Lot
         $query = Lot::find();
 
-        // Фильтрация по статусу
+        // Получение значений фильтров из запроса
+        $photoA_filter = Yii::$app->request->get('photoA_filter');
+        $photoD_filter = Yii::$app->request->get('photoD_filter');
+        $photoW_filter = Yii::$app->request->get('photoW_filter');
+        $photoL_filter = Yii::$app->request->get('photoL_filter');
         $status = Yii::$app->request->get('status');
+        $customerId = Yii::$app->request->get('customer_id');
+        $warehouseId = Yii::$app->request->get('warehouse_id');
+        $companyId = Yii::$app->request->get('company_id');
+        $search = Yii::$app->request->get('search');
+
+        // Применение фильтров по фотографиям
+        if ($photoA_filter === 'Yes') {
+            $query->andWhere(['not', ['photo_a' => null]]);
+            $query->andWhere(['<>', 'photo_a', '']);
+        } elseif ($photoA_filter === 'No') {
+            $query->andWhere(['or', ['photo_a' => null], ['photo_a' => '']]);
+        }
+
+        if ($photoD_filter === 'Yes') {
+            $query->andWhere(['not', ['photo_d' => null]]);
+            $query->andWhere(['<>', 'photo_d', '']);
+        } elseif ($photoD_filter === 'No') {
+            $query->andWhere(['or', ['photo_d' => null], ['photo_d' => '']]);
+        }
+
+        if ($photoW_filter === 'Yes') {
+            $query->andWhere(['not', ['photo_w' => null]]);
+            $query->andWhere(['<>', 'photo_w', '']);
+        } elseif ($photoW_filter === 'No') {
+            $query->andWhere(['or', ['photo_w' => null], ['photo_w' => '']]);
+        }
+
+        if ($photoL_filter === 'Yes') {
+            $query->andWhere(['not', ['photo_l' => null]]);
+            $query->andWhere(['<>', 'photo_l', '']);
+        } elseif ($photoL_filter === 'No') {
+            $query->andWhere(['or', ['photo_l' => null], ['photo_l' => '']]);
+        }
+
+        // Фильтрация по статусу
         if ($status) {
             $query->andWhere(['status' => $status]);
         }
 
         // Фильтрация по Customer
-        $customerId = Yii::$app->request->get('customer_id');
         if ($customerId) {
             $query->andWhere(['customer_id' => $customerId]);
         }
 
         // Фильтрация по Warehouse
-        $warehouseId = Yii::$app->request->get('warehouse_id');
         if ($warehouseId) {
             $query->andWhere(['warehouse_id' => $warehouseId]);
         }
 
         // Фильтрация по Company
-        $companyId = Yii::$app->request->get('company_id');
         if ($companyId) {
             $query->andWhere(['company_id' => $companyId]);
         }
 
         // Поиск по VIN, Lot или Auto
-        $search = Yii::$app->request->get('search');
         if ($search) {
             $query->andWhere(['or',
                 ['like', 'vin', $search],
@@ -252,14 +288,16 @@ class SiteController extends Controller
             ]);
         }
 
+        // Пагинация
+        $countQuery = clone $query;
         $pagination = new Pagination([
             'defaultPageSize' => 5,
-            'totalCount' => $query->count(),
+            'totalCount' => $countQuery->count(),
         ]);
 
         $lots = $query->offset($pagination->offset)
-            ->limit($pagination->limit)
-            ->all();
+                      ->limit($pagination->limit)
+                      ->all();
 
         // Получаем все возможные статусы
         $statuses = Lot::getStatuses();
@@ -273,6 +311,7 @@ class SiteController extends Controller
         // Получаем все компании
         $companies = Company::find()->select(['id', 'name'])->orderBy('name')->all();
 
+        // Передача переменных в вьюшку
         return $this->render('all_lots', [
             'lots' => $lots,
             'pagination' => $pagination,
@@ -285,6 +324,10 @@ class SiteController extends Controller
             'selectedWarehouse' => $warehouseId,
             'companies' => $companies,
             'selectedCompany' => $companyId,
+            'photoA_filter' => $photoA_filter,
+            'photoD_filter' => $photoD_filter,
+            'photoW_filter' => $photoW_filter,
+            'photoL_filter' => $photoL_filter,
         ]);
     }
 

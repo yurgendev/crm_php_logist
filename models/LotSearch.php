@@ -11,6 +11,11 @@ use app\models\Lot;
  */
 class LotSearch extends Lot
 {
+    public $photoA_filter;
+    public $photoD_filter;
+    public $photoW_filter;
+    public $photoL_filter;
+
     /**
      * {@inheritdoc}
      */
@@ -20,6 +25,7 @@ class LotSearch extends Lot
             [['id', 'account_id', 'auction_id', 'customer_id', 'warehouse_id', 'company_id', 'has_keys'], 'integer'],
             [['bos', 'photo_a', 'photo_d', 'photo_w', 'video', 'title', 'photo_l', 'status', 'status_changed', 'date_purchase', 'date_warehouse', 'payment_date', 'date_booking', 'data_container', 'date_unloaded', 'auto', 'vin', 'lot', 'url', 'line', 'booking_number', 'container', 'ata_data'], 'safe'],
             [['price'], 'number'],
+            [['photoA_filter', 'photoD_filter', 'photoW_filter', 'photoL_filter'], 'safe'],
         ];
     }
 
@@ -92,6 +98,35 @@ class LotSearch extends Lot
             ->andFilterWhere(['like', 'line', $this->line])
             ->andFilterWhere(['like', 'booking_number', $this->booking_number])
             ->andFilterWhere(['like', 'container', $this->container]);
+
+        // Фильтрация по наличию или отсутствию фотографий
+        if ($this->photoA_filter === 'Yes') {
+            $query->andWhere(['not', ['photo_a' => null]]);
+            $query->andWhere(['<>', 'photo_a', '']);
+        } elseif ($this->photoA_filter === 'No') {
+            $query->andWhere(['or', ['photo_a' => null], ['photo_a' => '']]);
+        }
+
+        if ($this->photoD_filter === 'Yes') {
+            $query->andWhere(['not', ['photo_d' => null]]);
+            $query->andWhere(['<>', 'photo_d', '']);
+        } elseif ($this->photoD_filter === 'No') {
+            $query->andWhere(['or', ['photo_d' => null], ['photo_d' => '']]);
+        }
+
+        if ($this->photoW_filter === 'Yes') {
+            $query->andWhere(['not', ['photo_w' => null]]);
+            $query->andWhere(['<>', 'photo_w', '']);
+        } elseif ($this->photoW_filter === 'No') {
+            $query->andWhere(['or', ['photo_w' => null], ['photo_w' => '']]);
+        }
+
+        if ($this->photoL_filter === 'Yes') {
+            $query->andWhere(['not', ['photo_l' => null]]);
+            $query->andWhere(['<>', 'photo_l', '']);
+        } elseif ($this->photoL_filter === 'No') {
+            $query->andWhere(['or', ['photo_l' => null], ['photo_l' => '']]);
+        }
 
         return $dataProvider;
     }
