@@ -43,6 +43,7 @@ class SiteController extends Controller
                 'class' => VerbFilter::class,
                 'actions' => [
                     'logout' => ['post'],
+                    'delete-image' => ['post'],
                 ],
             ],
         ];
@@ -180,17 +181,37 @@ class SiteController extends Controller
     ]);
     }
 
-    public function actionDeleteImage($path)
+
+    public function actionDeleteImage()
     {
-        $fullPath = Yii::getAlias('@webroot/' . $path);
-        if (file_exists($fullPath)) {
-            unlink($fullPath);
-            Yii::$app->session->setFlash('success', 'Image deleted successfully.');
-        } else {
-            Yii::$app->session->setFlash('error', 'Image not found.');
+        $id = Yii::$app->request->post('id');
+        $type = Yii::$app->request->post('type');
+        $image = Yii::$app->request->post('image');
+
+        $lot = Lot::findOne($id);
+        if (!$lot) {
+            Yii::$app->session->setFlash('danger', 'Лот не найден.');
+            return $this->redirect(['site/gallery', 'id' => $id, 'type' => $type]);
         }
 
-        return $this->redirect(Yii::$app->request->referrer);
+        $imagesField = 'photo_' . $type;
+        $images = explode(',', $lot->$imagesField);
+
+        // Удаляем изображение из массива
+        if (($key = array_search($image, $images)) !== false) {
+            unset($images[$key]);
+            // Обновляем поле в модели
+            $lot->$imagesField = implode(',', $images);
+            if ($lot->save(false)) {
+                Yii::$app->session->setFlash('success', 'Image deleted.');
+            } else {
+                Yii::$app->session->setFlash('danger', 'Delete error.');
+            }
+        } else {
+            Yii::$app->session->setFlash('danger', 'Image can not be founded.');
+        }
+
+        return $this->redirect(['site/gallery', 'id' => $id, 'type' => $type]);
     }
 
     public function actionAllLots()

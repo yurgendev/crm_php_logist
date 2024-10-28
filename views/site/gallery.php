@@ -42,11 +42,12 @@ $this->title = 'Photo - ' . strtoupper($type);
                     </a>
                     <div class="thumbnail-info">
                         <span class="thumbnail-date"><?= date('Y-m-d H:i:s', $thumbnail['uploaded_at']) ?></span>
-                        <?= Html::beginForm(['site/delete-image', 'path' => $thumbnail['path']], 'post', [
+                        <?= Html::beginForm(['site/delete-image'], 'post', [
                             'data' => [
-                                'confirm' => 'Are you sure you want to delete this image?',
-                            ],
-                        ]) ?>
+                                'confirm' => 'Вы уверены, что хотите удалить это изображение?',],]) ?>
+                            <?= Html::hiddenInput('id', $lot->id) ?>
+                            <?= Html::hiddenInput('type', $type) ?>
+                            <?= Html::hiddenInput('image', $images[$index]) ?>
                             <?= Html::submitButton('<i class="fas fa-trash-alt"></i>', ['class' => 'thumbnail-delete']) ?>
                         <?= Html::endForm() ?>
                     </div>

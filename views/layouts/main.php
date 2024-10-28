@@ -22,11 +22,19 @@ AppAsset::register($this);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="<?= Yii::$app->request->baseUrl ?>/css/site.css">
     <link rel="stylesheet" href="<?= Yii::$app->request->baseUrl ?>/css/custom.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css">
+    
 </head>
 <body>
 <?php $this->beginBody() ?>
 
 <<div class="container-fluid px-0 bg-light">
+<?php foreach (Yii::$app->session->getAllFlashes() as $type => $message): ?>
+        <div class="alert alert-<?= $type ?> alert-dismissible fade show" role="alert">
+            <?= $message ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endforeach; ?>
     <div class="row no-gutters">
         <div class="col-md-2 d-flex align-items-center justify-content-between sidebar-header" id="navbar">
             <div>
