@@ -118,6 +118,7 @@ function renderFilterForm($name, $selectedValue, $options, $excludeFields = []) 
                             'No' => 'No',
                         ], ['photoL_filter']) ?>
                     </th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -133,6 +134,13 @@ function renderFilterForm($name, $selectedValue, $options, $excludeFields = []) 
                         <td><?= $lot->photo_d ? Html::a('<i class="fas fa-check"></i>', ['site/gallery', 'id' => $lot->id, 'type' => 'd'], ['target' => '_blank']) : '' ?></td>
                         <td><?= $lot->photo_w ? Html::a('<i class="fas fa-check"></i>', ['site/gallery', 'id' => $lot->id, 'type' => 'w'], ['target' => '_blank']) : '' ?></td>
                         <td><?= $lot->photo_l ? Html::a('<i class="fas fa-check"></i>', ['site/gallery', 'id' => $lot->id, 'type' => 'l'], ['target' => '_blank']) : '' ?></td>
+                        <td>
+                            <?= Html::a('<i class="fas fa-edit"></i>', ['site/update-lot', 'id' => $lot->id], [
+                                'class' => 'btn btn-outline-primary btn-sm',
+                                'title' => 'Update',
+                                'data-toggle' => 'tooltip',
+                            ]) ?>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

@@ -331,6 +331,29 @@ class SiteController extends Controller
         ]);
     }
 
+    public function actionUpdateLot($id)
+    {
+        $model = $this->findModel($id);
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Yii::$app->session->setFlash('success', 'Lot updated successfully.');
+            return $this->redirect(['all-lots']);
+        }
+
+        return $this->render('update-lot', [
+            'model' => $model,
+        ]);
+    }
+
+    protected function findModel($id)
+    {
+        if (($model = Lot::findOne($id)) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
     public function actionNew()
     {
         $search = Yii::$app->request->get('search', '');

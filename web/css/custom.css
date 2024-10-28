@@ -272,3 +272,10 @@ ul li:hover .fas {
     color: #6f42c1; /* Фиолетовый цвет */
     border-color: #6f42c1; /* Фиолетовый цвет */
 }
+
+.btn-outline-primary.btn-sm {
+    border-radius: 50%;
+    padding: 5px 10px;
+    font-size: 14px;
+}
+
