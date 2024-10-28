@@ -102,6 +102,31 @@ a.desc:after {
 .sidebar.collapsed {
     width: 0; /* Скрытие сайдбара */
 }
+
+/* Стилизация ссылок в сайдбаре */
+.sidebar a {
+    color: #343a40; /* Текущий цвет текста, замените при необходимости */
+    text-decoration: none; /* Убираем подчеркивание */
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+}
+
+/* Изменение цвета текста при наведении */
+.sidebar a:hover {
+    color: #ffffff; /* Белый цвет текста при наведении */
+    background-color: #007bff; /* Фоновый цвет при наведении, можно изменить */
+}
+
+/* Если хотите, чтобы текст был белым постоянно */
+.sidebar a {
+    color: #ffffff; /* Постоянно белый цвет текста */
+}
+
+/* Дополнительно: стилизация иконок */
+.sidebar a i {
+    margin-right: 10px;
+}
 .main-content {
     flex-grow: 1;
     padding: 20px;
