@@ -29,18 +29,33 @@ $this->params['breadcrumbs'][] = 'Update';
 
         <?= $form->field($model, 'container')->textInput(['maxlength' => true]) ?>
 
-        <?= $form->field($model, 'video')->textInput(['maxlength' => true]) ?>
 
-        <?= $form->field($model, 'bosFiles')->widget(FileInput::classname(), [
-            'options' => ['multiple' => true],
-            'pluginOptions' => [
-                'showPreview' => true,
-                'showUpload' => false,
-                'browseLabel' => 'Choose BOS',
-                'removeLabel' => 'Delete',
-                'allowedFileExtensions' => ['jpg', 'png', 'gif', 'pdf'],
-            ],
-        ]); ?>
+        <div class="file-input-container">
+            <div class="file-input-item">
+                <?= $form->field($model, 'bosFiles')->widget(FileInput::classname(), [
+                    'options' => ['multiple' => true],
+                    'pluginOptions' => [
+                        'showPreview' => true,
+                        'showUpload' => false,
+                        'browseLabel' => 'Choose BOS',
+                        'removeLabel' => 'Delete',
+                        'allowedFileExtensions' => ['jpg', 'png', 'gif', 'pdf'],
+                    ],
+                ]); ?>
+            </div>
+            <div class="file-input-item">
+                <?= $form->field($model, 'titleFiles')->widget(FileInput::classname(), [
+                    'options' => ['multiple' => true],
+                    'pluginOptions' => [
+                        'showPreview' => true,
+                        'showUpload' => false,
+                        'browseLabel' => 'Choose Title',
+                        'removeLabel' => 'Delete',
+                        'allowedFileExtensions' => ['jpg', 'png', 'gif', 'pdf'],
+                    ],
+                ]); ?>
+            </div>
+        </div>
 
         <div class="form-group">
             <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

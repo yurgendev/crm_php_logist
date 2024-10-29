@@ -280,3 +280,21 @@ html, body {
     height: 100px;
     object-fit: cover;
 }
+
+.file-input-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.file-input-item {
+    flex: 1;
+    margin: 0 10px;
+}
+
+.file-input-item:first-child {
+    margin-left: 0;
+}
+
+.file-input-item:last-child {
+    margin-right: 0;
+}
