@@ -17,7 +17,7 @@ use app\models\Warehouse;
 use app\models\Company;
 use yii\helpers\FileHelper;
 use yii\imagine\Image;
-
+use yii\web\UploadedFile;
 
 
 class SiteController extends Controller
@@ -131,54 +131,54 @@ class SiteController extends Controller
         return $this->render('about');
     }
 
-    
 
-    
+
+
 
     public function actionGallery($id, $type)
-{
-    $lot = Lot::findOne($id);
-    if (!$lot) {
-        throw new NotFoundHttpException('Lot not found.');
-    }
-
-    $directories = [
-        'a' => 'uploads/photo_a',
-        'd' => 'uploads/photo_d',
-        'w' => 'uploads/photo_w',
-        'l' => 'uploads/photo_l',
-    ];
-
-    if (!isset($directories[$type])) {
-        throw new NotFoundHttpException('Invalid type specified.');
-    }
-
-    // Получаем изображения из соответствующего поля модели Lot
-    $imagesField = 'photo_' . $type;
-    $images = explode(',', $lot->$imagesField);
-
-    // Создаем миниатюры и добавляем дату и время загрузки
-    $thumbnails = [];
-    foreach ($images as $image) {
-        $thumbnailPath = 'uploads/thumbnails/' . basename($image);
-        $fullImagePath = Yii::getAlias('@webroot/' . $image);
-        if (!file_exists($thumbnailPath)) {
-            FileHelper::createDirectory('uploads/thumbnails');
-            Image::thumbnail($fullImagePath, 200, 200)
-                ->save(Yii::getAlias('@webroot/' . $thumbnailPath), ['quality' => 80]);
+    {
+        $lot = Lot::findOne($id);
+        if (!$lot) {
+            throw new NotFoundHttpException('Lot not found.');
         }
-        $thumbnails[] = [
-            'path' => $thumbnailPath,
-            'uploaded_at' => filemtime($fullImagePath), // Используем время последнего изменения файла
-        ];
-    }
 
-    return $this->render('gallery', [
-        'images' => $images,
-        'thumbnails' => $thumbnails,
-        'lot' => $lot,
-        'type' => $type,
-    ]);
+        $directories = [
+            'a' => 'uploads/photo_a',
+            'd' => 'uploads/photo_d',
+            'w' => 'uploads/photo_w',
+            'l' => 'uploads/photo_l',
+        ];
+
+        if (!isset($directories[$type])) {
+            throw new NotFoundHttpException('Invalid type specified.');
+        }
+
+        // Получаем изображения из соответствующего поля модели Lot
+        $imagesField = 'photo_' . $type;
+        $images = explode(',', $lot->$imagesField);
+
+        // Создаем миниатюры и добавляем дату и время загрузки
+        $thumbnails = [];
+        foreach ($images as $image) {
+            $thumbnailPath = 'uploads/thumbnails/' . basename($image);
+            $fullImagePath = Yii::getAlias('@webroot/' . $image);
+            if (!file_exists($thumbnailPath)) {
+                FileHelper::createDirectory('uploads/thumbnails');
+                Image::thumbnail($fullImagePath, 200, 200)
+                    ->save(Yii::getAlias('@webroot/' . $thumbnailPath), ['quality' => 80]);
+            }
+            $thumbnails[] = [
+                'path' => $thumbnailPath,
+                'uploaded_at' => filemtime($fullImagePath), // Используем время последнего изменения файла
+            ];
+        }
+
+        return $this->render('gallery', [
+            'images' => $images,
+            'thumbnails' => $thumbnails,
+            'lot' => $lot,
+            'type' => $type,
+        ]);
     }
 
 
@@ -281,7 +281,8 @@ class SiteController extends Controller
 
         // Поиск по VIN, Lot или Auto
         if ($search) {
-            $query->andWhere(['or',
+            $query->andWhere([
+                'or',
                 ['like', 'vin', $search],
                 ['like', 'lot', $search],
                 ['like', 'auto', $search],
@@ -296,8 +297,8 @@ class SiteController extends Controller
         ]);
 
         $lots = $query->offset($pagination->offset)
-                      ->limit($pagination->limit)
-                      ->all();
+            ->limit($pagination->limit)
+            ->all();
 
         // Получаем все возможные статусы
         $statuses = Lot::getStatuses();
@@ -331,18 +332,67 @@ class SiteController extends Controller
         ]);
     }
 
+
     public function actionUpdateLot($id)
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', 'Lot updated successfully.');
-            return $this->redirect(['all-lots']);
+        // Загружаем данные из формы
+        if ($model->load(Yii::$app->request->post())) {
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                // Получаем загруженные файлы
+                $bosFiles = UploadedFile::getInstances($model, 'bosFiles');
+                $titleFiles = UploadedFile::getInstances($model, 'titleFiles');
+
+                // Обрабатываем BOS файлы
+                $model->bos = $this->processFiles($bosFiles, $model->bos, 'bos');
+
+                // Обрабатываем Title файлы
+                $model->title = $this->processFiles($titleFiles, $model->title, 'title');
+
+                // Сохраняем модель
+                if ($model->save(false)) {
+                    $transaction->commit();
+                    Yii::$app->session->setFlash('success', 'Lot updated successfully.');
+                    return $this->redirect(['all-lots']);
+                } else {
+                    $transaction->rollBack();
+                }
+            } catch (\Exception $e) {
+                $transaction->rollBack();
+                throw $e;
+            }
         }
 
         return $this->render('update-lot', [
             'model' => $model,
         ]);
+    }
+
+    protected function processFiles($files, $existingFiles, $type)
+    {
+        $filePaths = [];
+
+        if (!empty($files)) {
+            // Получаем существующие файлы, если они есть
+            $existingFilePaths = !empty($existingFiles) ? explode(',', $existingFiles) : [];
+
+            foreach ($files as $file) {
+                $fileName = uniqid() . '_' . $file->baseName . '.' . $file->extension;
+                $filePath = 'uploads/' . $type . '/' . $fileName;
+                // Сохраняем файл
+                if ($file->saveAs($filePath)) {
+                    $filePaths[] = $filePath;
+                }
+            }
+
+            // Объединяем существующие файлы с новыми
+            $allFiles = array_merge($existingFilePaths, $filePaths);
+            return implode(',', $allFiles);
+        }
+
+        return $existingFiles;
     }
 
     protected function findModel($id)
@@ -361,8 +411,8 @@ class SiteController extends Controller
 
         if ($search) {
             $query->andFilterWhere(['like', 'vin', $search])
-                  ->orFilterWhere(['like', 'lot', $search])
-                  ->orFilterWhere(['like', 'auto', $search]);
+                ->orFilterWhere(['like', 'lot', $search])
+                ->orFilterWhere(['like', 'auto', $search]);
         }
 
         $pagination = new Pagination([
@@ -389,8 +439,8 @@ class SiteController extends Controller
 
         if ($search) {
             $query->andFilterWhere(['like', 'vin', $search])
-                  ->orFilterWhere(['like', 'lot', $search])
-                  ->orFilterWhere(['like', 'auto', $search]);
+                ->orFilterWhere(['like', 'lot', $search])
+                ->orFilterWhere(['like', 'auto', $search]);
         }
 
         $pagination = new Pagination([
@@ -417,8 +467,8 @@ class SiteController extends Controller
 
         if ($search) {
             $query->andFilterWhere(['like', 'vin', $search])
-                  ->orFilterWhere(['like', 'lot', $search])
-                  ->orFilterWhere(['like', 'auto', $search]);
+                ->orFilterWhere(['like', 'lot', $search])
+                ->orFilterWhere(['like', 'auto', $search]);
         }
 
         $pagination = new Pagination([
@@ -445,8 +495,8 @@ class SiteController extends Controller
 
         if ($search) {
             $query->andFilterWhere(['like', 'vin', $search])
-                  ->orFilterWhere(['like', 'lot', $search])
-                  ->orFilterWhere(['like', 'auto', $search]);
+                ->orFilterWhere(['like', 'lot', $search])
+                ->orFilterWhere(['like', 'auto', $search]);
         }
 
         $pagination = new Pagination([
@@ -473,8 +523,8 @@ class SiteController extends Controller
 
         if ($search) {
             $query->andFilterWhere(['like', 'vin', $search])
-                  ->orFilterWhere(['like', 'lot', $search])
-                  ->orFilterWhere(['like', 'auto', $search]);
+                ->orFilterWhere(['like', 'lot', $search])
+                ->orFilterWhere(['like', 'auto', $search]);
         }
 
         $pagination = new Pagination([
@@ -501,8 +551,8 @@ class SiteController extends Controller
 
         if ($search) {
             $query->andFilterWhere(['like', 'vin', $search])
-                  ->orFilterWhere(['like', 'lot', $search])
-                  ->orFilterWhere(['like', 'auto', $search]);
+                ->orFilterWhere(['like', 'lot', $search])
+                ->orFilterWhere(['like', 'auto', $search]);
         }
 
         $pagination = new Pagination([
@@ -549,7 +599,4 @@ class SiteController extends Controller
 
         return $this->render('view-pdf', ['pdfFile' => $pdfFile, 'lot' => $lot, 'type' => $type]);
     }
-
-    
-
 }

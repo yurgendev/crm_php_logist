@@ -3,6 +3,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use app\models\Customer;
+use kartik\file\FileInput;
 
 /** @var yii\web\View $this */
 /** @var app\models\Lot $model */
@@ -29,6 +30,17 @@ $this->params['breadcrumbs'][] = 'Update';
         <?= $form->field($model, 'container')->textInput(['maxlength' => true]) ?>
 
         <?= $form->field($model, 'video')->textInput(['maxlength' => true]) ?>
+
+        <?= $form->field($model, 'bosFiles')->widget(FileInput::classname(), [
+            'options' => ['multiple' => true],
+            'pluginOptions' => [
+                'showPreview' => true,
+                'showUpload' => false,
+                'browseLabel' => 'Choose BOS',
+                'removeLabel' => 'Delete',
+                'allowedFileExtensions' => ['jpg', 'png', 'gif', 'pdf'],
+            ],
+        ]); ?>
 
         <div class="form-group">
             <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
