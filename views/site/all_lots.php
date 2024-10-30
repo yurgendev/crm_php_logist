@@ -3,64 +3,31 @@ use yii\widgets\LinkPager;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
+use app\components\FilterHelper;
 
 /** @var yii\web\View $this */
-/** @var app\models\Lot[] $lots */
-/** @var yii\data\Pagination $pagination */
-/** @var string $search */
+/** @var app\models\Lot $searchModel */
+/** @var yii\data\ActiveDataProvider $dataProvider */
 /** @var array $statuses */
-/** @var string $selectedStatus */
 /** @var array $customers */
-/** @var string $selectedCustomer */
 /** @var array $warehouses */
-/** @var string $selectedWarehouse */
 /** @var array $companies */
-/** @var string $selectedCompany */
-/** @var string $photoA_filter */
-/** @var string $photoD_filter */
-/** @var string $photoW_filter */
-/** @var string $photoL_filter */
 
 $this->title = 'All Lots';
-
-// Функция для рендеринга формы фильтра
-function renderFilterForm($name, $selectedValue, $options, $excludeFields = []) {
-    $hiddenFields = [
-        'search' => Yii::$app->request->get('search'),
-        'status' => Yii::$app->request->get('status'),
-        'customer_id' => Yii::$app->request->get('customer_id'),
-        'warehouse_id' => Yii::$app->request->get('warehouse_id'),
-        'company_id' => Yii::$app->request->get('company_id'),
-        'photoA_filter' => Yii::$app->request->get('photoA_filter'),
-        'photoD_filter' => Yii::$app->request->get('photoD_filter'),
-        'photoW_filter' => Yii::$app->request->get('photoW_filter'),
-        'photoL_filter' => Yii::$app->request->get('photoL_filter'),
-    ];
-
-    // Убираем текущий фильтр из скрытых полей
-    foreach ($excludeFields as $excludeField) {
-        unset($hiddenFields[$excludeField]);
-    }
-
-    $form = Html::beginForm(['site/all-lots'], 'get', ['class' => 'd-inline']);
-    foreach ($hiddenFields as $fieldName => $fieldValue) {
-        $form .= Html::hiddenInput($fieldName, $fieldValue);
-    }
-    $form .= Html::dropDownList($name, $selectedValue, $options, [
-        'class' => 'form-select form-select-sm',
-        'onchange' => 'this.form.submit()',
-    ]);
-    $form .= Html::endForm();
-    return $form;
-}
 ?>
 <div class="site-all-lots">
     <h1><?= Html::encode($this->title) ?></h1>
 
     <!-- Форма поиска -->
     <form method="get" action="<?= Url::to(['site/all-lots']) ?>" class="mb-3">
-        <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Type VIN, Lot or Auto" name="search" value="<?= Html::encode($search) ?>">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Type VIN, Lot or Auto" name="search" value="<?= Html::encode(Yii::$app->request->get('search')) ?>">
+            <!-- Скрытые поля для сохранения фильтров -->
+            <?php foreach (Yii::$app->request->get() as $key => $value): ?>
+                <?php if (!in_array($key, ['search', 'page'])): ?>
+                    <?= Html::hiddenInput($key, $value) ?>
+                <?php endif; ?>
+            <?php endforeach; ?>
             <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
         </div>
     </form>
@@ -69,60 +36,33 @@ function renderFilterForm($name, $selectedValue, $options, $excludeFields = []) 
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Status
-                        <?= renderFilterForm('status', $selectedStatus, ['' => 'All'] + $statuses, ['status']) ?>
+                    <th>
+                        Status
+                        <?= FilterHelper::renderFilterForm('status', $searchModel->status, ['' => 'All'] + $statuses, Url::to(['site/all-lots'])) ?>
                     </th>
                     <th>Auto</th>
                     <th>VIN</th>
                     <th>
                         Company
-                        <?= renderFilterForm('company_id', $selectedCompany, ['' => 'All'] + ArrayHelper::map($companies, 'id', 'name'), ['company_id']) ?>
+                        <?= FilterHelper::renderFilterForm('company_id', $searchModel->company_id, ['' => 'All'] + ArrayHelper::map($companies, 'id', 'name'), Url::to(['site/all-lots'])) ?>
                     </th>
                     <th>
                         Customer
-                        <?= renderFilterForm('customer_id', $selectedCustomer, ['' => 'All'] + ArrayHelper::map($customers, 'id', 'name'), ['customer_id']) ?>
+                        <?= FilterHelper::renderFilterForm('customer_id', $searchModel->customer_id, ['' => 'All'] + ArrayHelper::map($customers, 'id', 'name'), Url::to(['site/all-lots'])) ?>
                     </th>
                     <th>
                         Warehouse
-                        <?= renderFilterForm('warehouse_id', $selectedWarehouse, ['' => 'All'] + ArrayHelper::map($warehouses, 'id', 'name'), ['warehouse_id']) ?>
+                        <?= FilterHelper::renderFilterForm('warehouse_id', $searchModel->warehouse_id, ['' => 'All'] + ArrayHelper::map($warehouses, 'id', 'name'), Url::to(['site/all-lots'])) ?>
                     </th>
-                    <th>
-                        Photo A
-                        <?= renderFilterForm('photoA_filter', $photoA_filter, [
-                            '' => 'All',
-                            'Yes' => 'Yes',
-                            'No' => 'No',
-                        ], ['photoA_filter']) ?>
-                    </th>
-                    <th>
-                        Photo D
-                        <?= renderFilterForm('photoD_filter', $photoD_filter, [
-                            '' => 'All',
-                            'Yes' => 'Yes',
-                            'No' => 'No',
-                        ], ['photoD_filter']) ?>
-                    </th>
-                    <th>
-                        Photo W
-                        <?= renderFilterForm('photoW_filter', $photoW_filter, [
-                            '' => 'All',
-                            'Yes' => 'Yes',
-                            'No' => 'No',
-                        ], ['photoW_filter']) ?>
-                    </th>
-                    <th>
-                        Photo L
-                        <?= renderFilterForm('photoL_filter', $photoL_filter, [
-                            '' => 'All',
-                            'Yes' => 'Yes',
-                            'No' => 'No',
-                        ], ['photoL_filter']) ?>
-                    </th>
+                    <th>Photo A</th>
+                    <th>Photo D</th>
+                    <th>Photo W</th>
+                    <th>Photo L</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($lots as $lot): ?>
+                <?php foreach ($dataProvider->getModels() as $lot): ?>
                     <tr>
                         <td><?= Html::encode($lot->status) ?></td>
                         <td><?= Html::encode($lot->auto) ?></td>
@@ -130,16 +70,24 @@ function renderFilterForm($name, $selectedValue, $options, $excludeFields = []) 
                         <td><?= Html::encode($lot->company->name) ?></td>
                         <td><?= Html::encode($lot->customer->name) ?></td>
                         <td><?= Html::encode($lot->warehouse->name) ?></td>
-                        <td><?= $lot->photo_a ? Html::a('<i class="fas fa-check"></i>', ['site/gallery', 'id' => $lot->id, 'type' => 'a'], ['target' => '_blank']) : '' ?></td>
-                        <td><?= $lot->photo_d ? Html::a('<i class="fas fa-check"></i>', ['site/gallery', 'id' => $lot->id, 'type' => 'd'], ['target' => '_blank']) : '' ?></td>
-                        <td><?= $lot->photo_w ? Html::a('<i class="fas fa-check"></i>', ['site/gallery', 'id' => $lot->id, 'type' => 'w'], ['target' => '_blank']) : '' ?></td>
-                        <td><?= $lot->photo_l ? Html::a('<i class="fas fa-check"></i>', ['site/gallery', 'id' => $lot->id, 'type' => 'l'], ['target' => '_blank']) : '' ?></td>
                         <td>
-                            <?= Html::a('<i class="fas fa-edit"></i>', ['site/update-lot', 'id' => $lot->id], [
-                                'class' => 'btn btn-outline-primary btn-sm',
-                                'title' => 'Update',
-                                'data-toggle' => 'tooltip',
-                            ]) ?>
+                            <?php $photoACount = $lot->getPhotoAFileCount(); ?>
+                            <?= $photoACount > 0 ? Html::a('<span class="photo-count-circle">' . $photoACount . '</span>', ['site/gallery', 'id' => $lot->id, 'type' => 'a'], ['target' => '_blank']) : '' ?>
+                        </td>
+                        <td>
+                            <?php $photoDCount = $lot->getPhotoDFileCount(); ?>
+                            <?= $photoDCount > 0 ? Html::a('<span class="photo-count-circle">' . $photoDCount . '</span>', ['site/gallery', 'id' => $lot->id, 'type' => 'd'], ['target' => '_blank']) : '' ?>
+                        </td>
+                        <td>
+                            <?php $photoWCount = $lot->getPhotoWFileCount(); ?>
+                            <?= $photoWCount > 0 ? Html::a('<span class="photo-count-circle">' . $photoWCount . '</span>', ['site/gallery', 'id' => $lot->id, 'type' => 'w'], ['target' => '_blank']) : '' ?>
+                        </td>
+                        <td>
+                            <?php $photoLCount = $lot->getPhotoLFileCount(); ?>
+                            <?= $photoLCount > 0 ? Html::a('<span class="photo-count-circle">' . $photoLCount . '</span>', ['site/gallery', 'id' => $lot->id, 'type' => 'l'], ['target' => '_blank']) : '' ?>
+                        </td>
+                        <td>
+                            <?= Html::a('<i class="fas fa-edit"></i>', ['site/update-lot', 'id' => $lot->id], ['class' => 'btn btn-outline-primary btn-sm', 'title' => 'Update']) ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -147,16 +95,6 @@ function renderFilterForm($name, $selectedValue, $options, $excludeFields = []) 
         </table>
     </div>
 
-    <div class="pagination-wrapper">
-        <?= LinkPager::widget([
-            'pagination' => $pagination,
-            'options' => ['class' => 'pagination justify-content-center'],
-            'linkOptions' => ['class' => 'page-link'],
-            'pageCssClass' => 'page-item',
-            'prevPageCssClass' => 'page-item',
-            'nextPageCssClass' => 'page-item',
-            'activePageCssClass' => 'active',
-            'disabledPageCssClass' => 'disabled',
-        ]) ?>
-    </div>
+    <!-- Пагинация -->
+    <?= $this->render('//partials/_pagination', ['pagination' => $dataProvider->pagination]) ?>
 </div>

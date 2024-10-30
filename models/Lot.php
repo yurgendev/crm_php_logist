@@ -3,6 +3,8 @@
 namespace app\models;
 
 use Yii;
+use yii\data\ActiveDataProvider;
+use yii\helpers\Url;
 
 /**
  * This is the model class for table "Lot".
@@ -313,7 +315,117 @@ class Lot extends \yii\db\ActiveRecord
         return count(explode(',', $files));
     }
 
-    
-    
+
+    public function search($params)
+    {
+        $query = self::find();
+
+        // Создаем ActiveDataProvider
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => 5, // Количество элементов на странице
+            ],
+        ]);
+
+        // Загружаем параметры поиска и применяем фильтры
+        if (!($this->load($params) && $this->validate())) {
+            return $dataProvider;
+        }
+
+        // Применение фильтров по фотографиям
+        if ($this->photoA_filter === 'Yes') {
+            $query->andWhere(['not', ['photo_a' => null]]);
+            $query->andWhere(['<>', 'photo_a', '']);
+        } elseif ($this->photoA_filter === 'No') {
+            $query->andWhere(['or', ['photo_a' => null], ['photo_a' => '']]);
+        }
+
+        if ($this->photoD_filter === 'Yes') {
+            $query->andWhere(['not', ['photo_d' => null]]);
+            $query->andWhere(['<>', 'photo_d', '']);
+        } elseif ($this->photoD_filter === 'No') {
+            $query->andWhere(['or', ['photo_d' => null], ['photo_d' => '']]);
+        }
+
+        if ($this->photoW_filter === 'Yes') {
+            $query->andWhere(['not', ['photo_w' => null]]);
+            $query->andWhere(['<>', 'photo_w', '']);
+        } elseif ($this->photoW_filter === 'No') {
+            $query->andWhere(['or', ['photo_w' => null], ['photo_w' => '']]);
+        }
+
+        if ($this->photoL_filter === 'Yes') {
+            $query->andWhere(['not', ['photo_l' => null]]);
+            $query->andWhere(['<>', 'photo_l', '']);
+        } elseif ($this->photoL_filter === 'No') {
+            $query->andWhere(['or', ['photo_l' => null], ['photo_l' => '']]);
+        }
+
+        // Фильтрация по статусу
+        if ($this->status) {
+            $query->andWhere(['status' => $this->status]);
+        }
+
+        // Фильтрация по Customer
+        if ($this->customer_id) {
+            $query->andWhere(['customer_id' => $this->customer_id]);
+        }
+
+        // Фильтрация по Warehouse
+        if ($this->warehouse_id) {
+            $query->andWhere(['warehouse_id' => $this->warehouse_id]);
+        }
+
+        // Фильтрация по Company
+        if ($this->company_id) {
+            $query->andWhere(['company_id' => $this->company_id]);
+        }
+
+        // Поиск по VIN, Lot или Auto
+        if ($this->search) {
+            $query->andWhere([
+                'or',
+                ['like', 'vin', $this->search],
+                ['like', 'lot_number', $this->search],
+                ['like', 'auto', $this->search],
+            ]);
+        }
+
+        return $dataProvider;
+    }
+
+
+
+    public function getInitialPreview($type)
+    {
+        $files = $this->$type ? explode(',', $this->$type) : [];
+        $initialPreview = [];
+        foreach ($files as $file) {
+            $initialPreview[] = Yii::getAlias('@web/uploads/' . $type . '/' . $file);
+        }
+        return $initialPreview;
+    }
+
+    public function getInitialPreviewConfig($type)
+    {
+        $files = $this->$type ? explode(',', $this->$type) : [];
+        $initialPreviewConfig = [];
+        foreach ($files as $file) {
+            $initialPreviewConfig[] = [
+                'caption' => basename($file),
+                'url' => Url::to(['site/delete-file', 'id' => $this->id, 'type' => $type, 'file' => $file]),
+                'key' => $file,
+            ];
+        }
+        return $initialPreviewConfig;
+    }
 
 }
+
+
+
+       
+
+
+

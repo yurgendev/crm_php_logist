@@ -18,6 +18,7 @@ use app\models\Company;
 use yii\helpers\FileHelper;
 use yii\imagine\Image;
 use yii\web\UploadedFile;
+use app\models\Auction;
 
 
 class SiteController extends Controller
@@ -215,122 +216,25 @@ class SiteController extends Controller
     }
 
     public function actionAllLots()
-    {
-        // Создаем запрос к модели Lot
-        $query = Lot::find();
+{
+    $searchModel = new Lot();
+    $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        // Получение значений фильтров из запроса
-        $photoA_filter = Yii::$app->request->get('photoA_filter');
-        $photoD_filter = Yii::$app->request->get('photoD_filter');
-        $photoW_filter = Yii::$app->request->get('photoW_filter');
-        $photoL_filter = Yii::$app->request->get('photoL_filter');
-        $status = Yii::$app->request->get('status');
-        $customerId = Yii::$app->request->get('customer_id');
-        $warehouseId = Yii::$app->request->get('warehouse_id');
-        $companyId = Yii::$app->request->get('company_id');
-        $search = Yii::$app->request->get('search');
+    // Получение данных для фильтров
+    $statuses = Lot::getStatuses();
+    $customers = Customer::find()->all();
+    $warehouses = Warehouse::find()->all();
+    $companies = Company::find()->all();
 
-        // Применение фильтров по фотографиям
-        if ($photoA_filter === 'Yes') {
-            $query->andWhere(['not', ['photo_a' => null]]);
-            $query->andWhere(['<>', 'photo_a', '']);
-        } elseif ($photoA_filter === 'No') {
-            $query->andWhere(['or', ['photo_a' => null], ['photo_a' => '']]);
-        }
-
-        if ($photoD_filter === 'Yes') {
-            $query->andWhere(['not', ['photo_d' => null]]);
-            $query->andWhere(['<>', 'photo_d', '']);
-        } elseif ($photoD_filter === 'No') {
-            $query->andWhere(['or', ['photo_d' => null], ['photo_d' => '']]);
-        }
-
-        if ($photoW_filter === 'Yes') {
-            $query->andWhere(['not', ['photo_w' => null]]);
-            $query->andWhere(['<>', 'photo_w', '']);
-        } elseif ($photoW_filter === 'No') {
-            $query->andWhere(['or', ['photo_w' => null], ['photo_w' => '']]);
-        }
-
-        if ($photoL_filter === 'Yes') {
-            $query->andWhere(['not', ['photo_l' => null]]);
-            $query->andWhere(['<>', 'photo_l', '']);
-        } elseif ($photoL_filter === 'No') {
-            $query->andWhere(['or', ['photo_l' => null], ['photo_l' => '']]);
-        }
-
-        // Фильтрация по статусу
-        if ($status) {
-            $query->andWhere(['status' => $status]);
-        }
-
-        // Фильтрация по Customer
-        if ($customerId) {
-            $query->andWhere(['customer_id' => $customerId]);
-        }
-
-        // Фильтрация по Warehouse
-        if ($warehouseId) {
-            $query->andWhere(['warehouse_id' => $warehouseId]);
-        }
-
-        // Фильтрация по Company
-        if ($companyId) {
-            $query->andWhere(['company_id' => $companyId]);
-        }
-
-        // Поиск по VIN, Lot или Auto
-        if ($search) {
-            $query->andWhere([
-                'or',
-                ['like', 'vin', $search],
-                ['like', 'lot', $search],
-                ['like', 'auto', $search],
-            ]);
-        }
-
-        // Пагинация
-        $countQuery = clone $query;
-        $pagination = new Pagination([
-            'defaultPageSize' => 5,
-            'totalCount' => $countQuery->count(),
-        ]);
-
-        $lots = $query->offset($pagination->offset)
-            ->limit($pagination->limit)
-            ->all();
-
-        // Получаем все возможные статусы
-        $statuses = Lot::getStatuses();
-
-        // Получаем всех клиентов
-        $customers = Customer::find()->select(['id', 'name'])->orderBy('name')->all();
-
-        // Получаем все склады
-        $warehouses = Warehouse::find()->select(['id', 'name'])->orderBy('name')->all();
-
-        // Получаем все компании
-        $companies = Company::find()->select(['id', 'name'])->orderBy('name')->all();
-
-        // Передача переменных в вьюшку
-        return $this->render('all_lots', [
-            'lots' => $lots,
-            'pagination' => $pagination,
-            'search' => $search,
-            'statuses' => $statuses,
-            'selectedStatus' => $status,
-            'customers' => $customers,
-            'selectedCustomer' => $customerId,
-            'warehouses' => $warehouses,
-            'selectedWarehouse' => $warehouseId,
-            'companies' => $companies,
-            'selectedCompany' => $companyId,
-            'photoA_filter' => $photoA_filter,
-            'photoD_filter' => $photoD_filter,
-            'photoW_filter' => $photoW_filter,
-            'photoL_filter' => $photoL_filter,
-        ]);
-    }
+    return $this->render('all_lots', [
+        'searchModel' => $searchModel,
+        'dataProvider' => $dataProvider,
+        'statuses' => $statuses,
+        'customers' => $customers,
+        'warehouses' => $warehouses,
+        'companies' => $companies,
+    ]);
+}
 
 
     public function actionUpdateLot($id)
@@ -395,40 +299,23 @@ class SiteController extends Controller
         return $existingFiles;
     }
 
-    protected function findModel($id)
-    {
-        if (($model = Lot::findOne($id)) !== null) {
-            return $model;
-        }
-
-        throw new NotFoundHttpException('The requested page does not exist.');
-    }
 
     public function actionNew()
     {
-        $search = Yii::$app->request->get('search', '');
-        $query = Lot::find()->where(['status' => 'new']);
+        $searchModel = new Lot();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if ($search) {
-            $query->andFilterWhere(['like', 'vin', $search])
-                ->orFilterWhere(['like', 'lot', $search])
-                ->orFilterWhere(['like', 'auto', $search]);
-        }
-
-        $pagination = new Pagination([
-            'defaultPageSize' => 10,
-            'totalCount' => $query->count(),
-        ]);
-
-        $lots = $query->orderBy('id')
-            ->offset($pagination->offset)
-            ->limit($pagination->limit)
-            ->all();
+        // Получение данных для фильтров
+        $auctions = Auction::find()->all();
+        $customers = Customer::find()->all();
+        $warehouses = Warehouse::find()->all();
 
         return $this->render('new', [
-            'lots' => $lots,
-            'pagination' => $pagination,
-            'search' => $search,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'auctions' => $auctions,
+            'customers' => $customers,
+            'warehouses' => $warehouses,
         ]);
     }
 
@@ -599,4 +486,52 @@ class SiteController extends Controller
 
         return $this->render('view-pdf', ['pdfFile' => $pdfFile, 'lot' => $lot, 'type' => $type]);
     }
+
+    
+    public function actionDeleteFile($id, $type, $file)
+    {
+        $model = $this->findModel($id);
+
+        $fileFields = [
+            'bos' => 'bos',
+            'title' => 'title',
+        ];
+
+        if (!isset($fileFields[$type])) {
+            throw new NotFoundHttpException('Invalid type specified.');
+        }
+
+        $fileField = $fileFields[$type];
+        $files = explode(',', $model->$fileField);
+        $fileIndex = array_search($file, $files);
+
+        if ($fileIndex !== false) {
+            unset($files[$fileIndex]);
+            $model->$fileField = implode(',', $files);
+            if ($model->save(false)) {
+                $filePath = Yii::getAlias('@webroot/uploads/' . $type . '/' . $file);
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
+                Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+                return ['success' => true];
+            } else {
+                Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+                return ['success' => false, 'error' => 'Failed to delete file.'];
+            }
+        } else {
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            return ['success' => false, 'error' => 'File not found.'];
+        }
+    }
+
+    protected function findModel($id)
+    {
+        if (($model = Lot::findOne($id)) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
+        
 }

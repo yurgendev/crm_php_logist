@@ -7,9 +7,8 @@ use kartik\file\FileInput;
 
 /** @var yii\web\View $this */
 /** @var app\models\Lot $model */
-/** @var yii\widgets\ActiveForm $form */
 
-$this->title = 'Update: ' . $model->vin;
+$this->title = 'Update Lot: ' . $model->vin;
 $this->params['breadcrumbs'][] = ['label' => 'Lots', 'url' => ['all-lots']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
@@ -29,12 +28,17 @@ $this->params['breadcrumbs'][] = 'Update';
 
         <?= $form->field($model, 'container')->textInput(['maxlength' => true]) ?>
 
+        <?= $form->field($model, 'video')->textInput(['maxlength' => true]) ?>
 
         <div class="file-input-container">
             <div class="file-input-item">
                 <?= $form->field($model, 'bosFiles')->widget(FileInput::classname(), [
                     'options' => ['multiple' => true],
                     'pluginOptions' => [
+                        'initialPreview' => $model->getInitialPreview('bos'),
+                        'initialPreviewConfig' => $model->getInitialPreviewConfig('bos'),
+                        'initialPreviewAsData' => true,
+                        'overwriteInitial' => false,
                         'showPreview' => true,
                         'showUpload' => false,
                         'browseLabel' => 'Choose BOS',
@@ -47,6 +51,10 @@ $this->params['breadcrumbs'][] = 'Update';
                 <?= $form->field($model, 'titleFiles')->widget(FileInput::classname(), [
                     'options' => ['multiple' => true],
                     'pluginOptions' => [
+                        'initialPreview' => $model->getInitialPreview('title'),
+                        'initialPreviewConfig' => $model->getInitialPreviewConfig('title'),
+                        'initialPreviewAsData' => true,
+                        'overwriteInitial' => false,
                         'showPreview' => true,
                         'showUpload' => false,
                         'browseLabel' => 'Choose Title',
