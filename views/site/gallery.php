@@ -25,11 +25,11 @@ $this->title = 'Photo - ' . strtoupper($type);
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
+            <span class="visually">Previous</span>
         </button>
         <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
+            <span class="visually">Next</span>
         </button>
     </div>
 
@@ -57,30 +57,3 @@ $this->title = 'Photo - ' . strtoupper($type);
     </div>
 </div>
 
-<style>
-.thumbnail-container {
-    position: relative;
-    text-align: center;
-    margin-bottom: 20px; /* Добавим отступ снизу */
-}
-
-.thumbnail-info {
-    margin-top: 5px; /* Добавим отступ сверху */
-    background: rgba(0, 0, 0, 0.5);
-    color: white;
-    padding: 5px;
-    border-radius: 5px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.thumbnail-date {
-    margin-right: 10px; /* Добавим отступ справа */
-}
-
-.thumbnail-delete {
-    color: red;
-    cursor: pointer;
-}
-</style>
