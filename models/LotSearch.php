@@ -1,55 +1,28 @@
 <?php
-
 namespace app\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Lot;
 
-/**
- * LotSearch represents the model behind the search form of `app\models\Lot`.
- */
 class LotSearch extends Lot
 {
-    public $photoA_filter;
-    public $photoD_filter;
-    public $photoW_filter;
-    public $photoL_filter;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function rules() 
+    public function rules()
     {
         return [
             [['id', 'account_id', 'auction_id', 'customer_id', 'warehouse_id', 'company_id', 'has_keys'], 'integer'],
             [['bos', 'photo_a', 'photo_d', 'photo_w', 'video', 'title', 'photo_l', 'status', 'status_changed', 'date_purchase', 'date_warehouse', 'payment_date', 'date_booking', 'data_container', 'date_unloaded', 'auto', 'vin', 'lot', 'url', 'line', 'booking_number', 'container', 'ata_data'], 'safe'],
             [['price'], 'number'],
-            [['photoA_filter', 'photoD_filter', 'photoW_filter', 'photoL_filter'], 'safe'],
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function scenarios()
     {
-        // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
 
-    /**
-     * Creates data provider instance with search query applied
-     *
-     * @param array $params
-     *
-     * @return ActiveDataProvider
-     */
     public function search($params)
     {
         $query = Lot::find();
-
-        // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -58,12 +31,9 @@ class LotSearch extends Lot
         $this->load($params);
 
         if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
             return $dataProvider;
         }
 
-        // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
             'status_changed' => $this->status_changed,
@@ -98,35 +68,6 @@ class LotSearch extends Lot
             ->andFilterWhere(['like', 'line', $this->line])
             ->andFilterWhere(['like', 'booking_number', $this->booking_number])
             ->andFilterWhere(['like', 'container', $this->container]);
-
-        // Фильтрация по наличию или отсутствию фотографий
-        if ($this->photoA_filter === 'Yes') {
-            $query->andWhere(['not', ['photo_a' => null]]);
-            $query->andWhere(['<>', 'photo_a', '']);
-        } elseif ($this->photoA_filter === 'No') {
-            $query->andWhere(['or', ['photo_a' => null], ['photo_a' => '']]);
-        }
-
-        if ($this->photoD_filter === 'Yes') {
-            $query->andWhere(['not', ['photo_d' => null]]);
-            $query->andWhere(['<>', 'photo_d', '']);
-        } elseif ($this->photoD_filter === 'No') {
-            $query->andWhere(['or', ['photo_d' => null], ['photo_d' => '']]);
-        }
-
-        if ($this->photoW_filter === 'Yes') {
-            $query->andWhere(['not', ['photo_w' => null]]);
-            $query->andWhere(['<>', 'photo_w', '']);
-        } elseif ($this->photoW_filter === 'No') {
-            $query->andWhere(['or', ['photo_w' => null], ['photo_w' => '']]);
-        }
-
-        if ($this->photoL_filter === 'Yes') {
-            $query->andWhere(['not', ['photo_l' => null]]);
-            $query->andWhere(['<>', 'photo_l', '']);
-        } elseif ($this->photoL_filter === 'No') {
-            $query->andWhere(['or', ['photo_l' => null], ['photo_l' => '']]);
-        }
 
         return $dataProvider;
     }

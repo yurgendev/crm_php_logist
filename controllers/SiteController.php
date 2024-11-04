@@ -19,6 +19,7 @@ use yii\helpers\FileHelper;
 use yii\imagine\Image;
 use yii\web\UploadedFile;
 use app\models\Auction;
+use app\models\LotSearch;
 
 
 class SiteController extends Controller
@@ -226,25 +227,24 @@ class SiteController extends Controller
     }
 
     public function actionAllLots()
-{
-    $searchModel = new Lot();
-    $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+    {
+        $searchModel = new LotSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-    // Получение данных для фильтров
-    $statuses = Lot::getStatuses();
-    $customers = Customer::find()->all();
-    $warehouses = Warehouse::find()->all();
-    $companies = Company::find()->all();
+        $statuses = Lot::getStatuses();
+        $customers = Customer::find()->all();
+        $warehouses = Warehouse::find()->all();
+        $companies = Company::find()->all();
 
-    return $this->render('all_lots', [
-        'searchModel' => $searchModel,
-        'dataProvider' => $dataProvider,
-        'statuses' => $statuses,
-        'customers' => $customers,
-        'warehouses' => $warehouses,
-        'companies' => $companies,
-    ]);
-}
+        return $this->render('all_lots', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'statuses' => $statuses,
+            'customers' => $customers,
+            'warehouses' => $warehouses,
+            'companies' => $companies,
+        ]);
+    }
 
 
     public function actionUpdateLot($id)

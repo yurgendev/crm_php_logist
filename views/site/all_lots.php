@@ -6,7 +6,7 @@ use yii\helpers\ArrayHelper;
 use app\components\FilterHelper;
 
 /** @var yii\web\View $this */
-/** @var app\models\Lot $searchModel */
+/** @var app\models\LotSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 /** @var array $statuses */
 /** @var array $customers */
@@ -21,13 +21,7 @@ $this->title = 'All Lots';
     <!-- Форма поиска -->
     <form method="get" action="<?= Url::to(['site/all-lots']) ?>" class="mb-3">
         <div class="input-group">
-            <input type="text" class="form-control" placeholder="Type VIN, Lot or Auto" name="search" value="<?= Html::encode(Yii::$app->request->get('search')) ?>">
-            <!-- Скрытые поля для сохранения фильтров -->
-            <?php foreach (Yii::$app->request->get() as $key => $value): ?>
-                <?php if (!in_array($key, ['search', 'page'])): ?>
-                    <?= Html::hiddenInput($key, $value) ?>
-                <?php endif; ?>
-            <?php endforeach; ?>
+            <?= Html::activeTextInput($searchModel, 'vin', ['class' => 'form-control', 'placeholder' => 'Type VIN, Lot or Auto']) ?>
             <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
         </div>
     </form>
@@ -38,21 +32,41 @@ $this->title = 'All Lots';
                 <tr>
                     <th>
                         Status
-                        <?= FilterHelper::renderFilterForm('status', $searchModel->status, ['' => 'All'] + $statuses, Url::to(['site/all-lots'])) ?>
+                        <?= Html::beginForm(['site/all-lots'], 'get', ['class' => 'filter-form']) ?>
+                        <?= Html::dropDownList('LotSearch[status]', $searchModel->status, ['' => 'All'] + $statuses, [
+                            'class' => 'form-control',
+                            'onchange' => 'this.form.submit()',
+                        ]) ?>
+                        <?= Html::endForm() ?>
                     </th>
                     <th>Auto</th>
                     <th>VIN</th>
                     <th>
                         Company
-                        <?= FilterHelper::renderFilterForm('company_id', $searchModel->company_id, ['' => 'All'] + ArrayHelper::map($companies, 'id', 'name'), Url::to(['site/all-lots'])) ?>
+                        <?= Html::beginForm(['site/all-lots'], 'get', ['class' => 'filter-form']) ?>
+                        <?= Html::dropDownList('LotSearch[company_id]', $searchModel->company_id, ['' => 'All'] + ArrayHelper::map($companies, 'id', 'name'), [
+                            'class' => 'form-control',
+                            'onchange' => 'this.form.submit()',
+                        ]) ?>
+                        <?= Html::endForm() ?>
                     </th>
                     <th>
                         Customer
-                        <?= FilterHelper::renderFilterForm('customer_id', $searchModel->customer_id, ['' => 'All'] + ArrayHelper::map($customers, 'id', 'name'), Url::to(['site/all-lots'])) ?>
+                        <?= Html::beginForm(['site/all-lots'], 'get', ['class' => 'filter-form']) ?>
+                        <?= Html::dropDownList('LotSearch[customer_id]', $searchModel->customer_id, ['' => 'All'] + ArrayHelper::map($customers, 'id', 'name'), [
+                            'class' => 'form-control',
+                            'onchange' => 'this.form.submit()',
+                        ]) ?>
+                        <?= Html::endForm() ?>
                     </th>
                     <th>
                         Warehouse
-                        <?= FilterHelper::renderFilterForm('warehouse_id', $searchModel->warehouse_id, ['' => 'All'] + ArrayHelper::map($warehouses, 'id', 'name'), Url::to(['site/all-lots'])) ?>
+                        <?= Html::beginForm(['site/all-lots'], 'get', ['class' => 'filter-form']) ?>
+                        <?= Html::dropDownList('LotSearch[warehouse_id]', $searchModel->warehouse_id, ['' => 'All'] + ArrayHelper::map($warehouses, 'id', 'name'), [
+                            'class' => 'form-control',
+                            'onchange' => 'this.form.submit()',
+                        ]) ?>
+                        <?= Html::endForm() ?>
                     </th>
                     <th>Photo A</th>
                     <th>Photo D</th>
