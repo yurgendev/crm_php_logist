@@ -518,9 +518,9 @@ class SiteController extends Controller
             if (file_exists($filePath)) {
                 unlink($filePath);
             }
-            return true; // Возвращаем успех
+            return true; 
         } else {
-            return false; // Возвращаем неуспех
+            return false; 
         }
     } else {
         throw new NotFoundHttpException('Файл не найден.');
