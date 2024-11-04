@@ -4,6 +4,7 @@ use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use app\models\Customer;
 use kartik\file\FileInput;
+use yii\helpers\Url;
 
 /** @var yii\web\View $this */
 /** @var app\models\Lot $model */
@@ -19,7 +20,9 @@ $this->params['breadcrumbs'][] = 'Update';
 
     <div class="lot-form">
 
-        <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([
+        'options' => ['enctype'=>'multipart/form-data'],
+    ]); ?>
 
         <?= $form->field($model, 'customer_id')->dropDownList(
             ArrayHelper::map(Customer::find()->all(), 'id', 'name'),
@@ -32,20 +35,24 @@ $this->params['breadcrumbs'][] = 'Update';
 
         <div class="file-input-container">
             <div class="file-input-item">
-                <?= $form->field($model, 'bosFiles')->widget(FileInput::classname(), [
-                    'options' => ['multiple' => true],
-                    'pluginOptions' => [
-                        'initialPreview' => $model->getInitialPreview('bos'),
-                        'initialPreviewConfig' => $model->getInitialPreviewConfig('bos'),
-                        'initialPreviewAsData' => true,
-                        'overwriteInitial' => false,
-                        'showPreview' => true,
-                        'showUpload' => false,
-                        'browseLabel' => 'Choose BOS',
-                        'removeLabel' => 'Delete',
-                        'allowedFileExtensions' => ['jpg', 'png', 'gif', 'pdf'],
-                    ],
-                ]); ?>
+            <?= $form->field($model, 'bosFiles')->widget(FileInput::classname(), [
+            'options' => ['multiple' => true],
+            'pluginOptions' => [
+                'initialPreview' => $model->getInitialPreview('bos'),
+                'initialPreviewConfig' => $model->getInitialPreviewConfig('bos'),
+                'initialPreviewAsData' => true,
+                'overwriteInitial' => false,
+                'showUpload' => false,
+                'browseLabel' => 'Выбрать BOS',
+                'removeLabel' => 'Удалить',
+                'allowedFileExtensions' => ['jpg', 'jpeg', 'png', 'gif', 'pdf'],
+                'deleteUrl' => Url::to(['/site/delete-file']),
+                'deleteExtraData' => [
+                    'id' => $model->id,
+                    'type' => 'bos',
+                ],
+            ],
+        ]); ?>
             </div>
             <div class="file-input-item">
                 <?= $form->field($model, 'titleFiles')->widget(FileInput::classname(), [
@@ -59,7 +66,7 @@ $this->params['breadcrumbs'][] = 'Update';
                         'showUpload' => false,
                         'browseLabel' => 'Choose Title',
                         'removeLabel' => 'Delete',
-                        'allowedFileExtensions' => ['jpg', 'png', 'gif', 'pdf'],
+                        'allowedFileExtensions' => ['jpg', 'jpeg', 'png', 'gif', 'pdf'],
                     ],
                 ]); ?>
             </div>

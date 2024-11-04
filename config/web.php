@@ -58,6 +58,7 @@ $config = [
             'user/delete/<id:\d+>' => 'user/delete',
             'admin' => 'admin/default/index', // Обновите этот маршрут
             'admin/<controller:\w+>/<action:\w+>' => 'admin/<controller>/<action>', // Добавьте это правило
+            'site/delete-file' => 'site/delete-file',
         ],
         ],
     ],

@@ -414,8 +414,13 @@ class Lot extends \yii\db\ActiveRecord
         foreach ($files as $file) {
             $initialPreviewConfig[] = [
                 'caption' => basename($file),
-                'url' => Url::to(['site/delete-file', 'id' => $this->id, 'type' => $type, 'file' => $file]),
+                'url' => Url::to(['/site/delete-file']), // Убедитесь, что путь указан правильно
                 'key' => $file,
+                'extra' => [
+                    'id' => $this->id,
+                    'type' => $type,
+                    'file' => $file,
+                ],
             ];
         }
         return $initialPreviewConfig;

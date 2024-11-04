@@ -50,6 +50,7 @@ class SiteController extends Controller
         ];
     }
 
+
     /**
      * {@inheritdoc}
      */
@@ -74,6 +75,15 @@ class SiteController extends Controller
     public function actionIndex()
     {
         return $this->render('index');
+    }
+
+    protected function findModel($id)
+    {
+        if (($model = Lot::findOne($id)) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
     }
 
     /**
@@ -241,7 +251,6 @@ class SiteController extends Controller
     {
         $model = $this->findModel($id);
 
-        // Загружаем данные из формы
         if ($model->load(Yii::$app->request->post())) {
             $transaction = Yii::$app->db->beginTransaction();
             try {
@@ -274,29 +283,19 @@ class SiteController extends Controller
         ]);
     }
 
-    protected function processFiles($files, $existingFiles, $type)
+    protected function processFiles($uploadedFiles, $existingFiles, $type)
     {
-        $filePaths = [];
-
-        if (!empty($files)) {
-            // Получаем существующие файлы, если они есть
-            $existingFilePaths = !empty($existingFiles) ? explode(',', $existingFiles) : [];
-
-            foreach ($files as $file) {
-                $fileName = uniqid() . '_' . $file->baseName . '.' . $file->extension;
-                $filePath = 'uploads/' . $type . '/' . $fileName;
-                // Сохраняем файл
-                if ($file->saveAs($filePath)) {
-                    $filePaths[] = $filePath;
-                }
+        $savedFileNames = [];
+        foreach ($uploadedFiles as $file) {
+            $fileName = uniqid() . '.' . $file->extension;
+            $filePath = Yii::getAlias('@webroot/uploads/' . $type . '/' . $fileName);
+            if ($file->saveAs($filePath)) {
+                $savedFileNames[] = $fileName;
             }
-
-            // Объединяем существующие файлы с новыми
-            $allFiles = array_merge($existingFilePaths, $filePaths);
-            return implode(',', $allFiles);
         }
-
-        return $existingFiles;
+        $existingFilesArray = $existingFiles ? explode(',', $existingFiles) : [];
+        $allFiles = array_merge($existingFilesArray, $savedFileNames);
+        return implode(',', $allFiles);
     }
 
 
@@ -488,50 +487,44 @@ class SiteController extends Controller
     }
 
     
-    public function actionDeleteFile($id, $type, $file)
-    {
-        $model = $this->findModel($id);
 
-        $fileFields = [
-            'bos' => 'bos',
-            'title' => 'title',
-        ];
 
-        if (!isset($fileFields[$type])) {
-            throw new NotFoundHttpException('Invalid type specified.');
-        }
 
-        $fileField = $fileFields[$type];
-        $files = explode(',', $model->$fileField);
-        $fileIndex = array_search($file, $files);
+    public function actionDeleteFile()
+{
+    $id = Yii::$app->request->post('id');
+    $type = Yii::$app->request->post('type');
+    $file = Yii::$app->request->post('key'); // Используем 'key', так как плагин отправляет 'key'
 
-        if ($fileIndex !== false) {
-            unset($files[$fileIndex]);
-            $model->$fileField = implode(',', $files);
-            if ($model->save(false)) {
-                $filePath = Yii::getAlias('@webroot/uploads/' . $type . '/' . $file);
-                if (file_exists($filePath)) {
-                    unlink($filePath);
-                }
-                Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-                return ['success' => true];
-            } else {
-                Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-                return ['success' => false, 'error' => 'Failed to delete file.'];
+    if (!$id || !$type || !$file) {
+        throw new NotFoundHttpException('Некорректные параметры удаления.');
+    }
+
+    $lot = $this->findModel($id);
+    if (!$lot) {
+        throw new NotFoundHttpException('Лот не найден.');
+    }
+
+    $fileField = $type;
+    $files = explode(',', $lot->$fileField);
+
+    // Удаляем файл из массива
+    if (($key = array_search($file, $files)) !== false) {
+        unset($files[$key]);
+        // Обновляем поле в модели
+        $lot->$fileField = implode(',', $files);
+        if ($lot->save(false)) {
+            $filePath = Yii::getAlias('@webroot/uploads/' . $type . '/' . $file);
+            if (file_exists($filePath)) {
+                unlink($filePath);
             }
+            return true; // Возвращаем успех
         } else {
-            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-            return ['success' => false, 'error' => 'File not found.'];
+            return false; // Возвращаем неуспех
         }
+    } else {
+        throw new NotFoundHttpException('Файл не найден.');
     }
-
-    protected function findModel($id)
-    {
-        if (($model = Lot::findOne($id)) !== null) {
-            return $model;
-        }
-
-        throw new NotFoundHttpException('The requested page does not exist.');
-    }
-        
 }
+    
+    }
