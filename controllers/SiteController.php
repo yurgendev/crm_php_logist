@@ -78,14 +78,6 @@ class SiteController extends Controller
         return $this->render('index');
     }
 
-    protected function findModel($id)
-    {
-        if (($model = Lot::findOne($id)) !== null) {
-            return $model;
-        }
-
-        throw new NotFoundHttpException('The requested page does not exist.');
-    }
 
     /**
      * Login action.
@@ -459,31 +451,52 @@ class SiteController extends Controller
     }
 
 
-    public function actionViewPdf($id, $type)
+    
+    
+public function actionViewPdf($id, $type)
+{
+    $lot = $this->findModel($id);
+
+    if (!$lot) {
+        throw new NotFoundHttpException('Лот не найден.');
+    }
+
+    $fileField = $type;
+    $pdfFile = $lot->$fileField;
+
+    // Определяем директорию в зависимости от типа файла
+    $directories = [
+        'bos' => 'uploads/bos',
+        'title' => 'uploads/title',
+    ];
+
+    if (!isset($directories[$type])) {
+        throw new NotFoundHttpException('Invalid type specified.');
+    }
+
+    $filePath = Yii::getAlias('@webroot') . '/' . $directories[$type] . '/' . $pdfFile;
+
+    Yii::info("Trying to access file: $filePath", __METHOD__);
+
+    if (!$pdfFile || !file_exists($filePath)) {
+        Yii::error("File not found: $filePath", __METHOD__);
+        throw new NotFoundHttpException('File not found.');
+    }
+
+    return $this->render('view-pdf', [
+        'pdfFile' => $directories[$type] . '/' . $pdfFile,
+        'lot' => $lot,
+        'type' => $type,
+    ]);
+}
+    
+    protected function findModel($id)
     {
-        $lot = Lot::findOne($id);
-        if (!$lot) {
-            throw new NotFoundHttpException('Lot not found.');
+        if (($model = Lot::findOne($id)) !== null) {
+            return $model;
         }
-
-        $pdfFields = [
-            'bos' => 'bos',
-            'title' => 'title',
-        ];
-
-        if (!isset($pdfFields[$type])) {
-            throw new NotFoundHttpException('Invalid type specified.');
-        }
-
-        // Получаем путь к PDF файлу из соответствующего поля модели Lot
-        $pdfField = $pdfFields[$type];
-        $pdfFile = $lot->$pdfField;
-
-        if (!$pdfFile || !file_exists($pdfFile)) {
-            throw new NotFoundHttpException('File not found.');
-        }
-
-        return $this->render('view-pdf', ['pdfFile' => $pdfFile, 'lot' => $lot, 'type' => $type]);
+    
+        throw new NotFoundHttpException('The requested page does not exist.');
     }
 
     

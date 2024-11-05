@@ -6,12 +6,20 @@ use yii\data\ActiveDataProvider;
 
 class LotSearch extends Lot
 {
+
+    public $photoA_filter;
+    public $photoD_filter;
+    public $photoW_filter;
+    public $photoL_filter;
+    
     public function rules()
     {
         return [
             [['id', 'account_id', 'auction_id', 'customer_id', 'warehouse_id', 'company_id', 'has_keys'], 'integer'],
             [['bos', 'photo_a', 'photo_d', 'photo_w', 'video', 'title', 'photo_l', 'status', 'status_changed', 'date_purchase', 'date_warehouse', 'payment_date', 'date_booking', 'data_container', 'date_unloaded', 'auto', 'vin', 'lot', 'url', 'line', 'booking_number', 'container', 'ata_data'], 'safe'],
             [['price'], 'number'],
+            [['photoA_filter', 'photoD_filter', 'photoW_filter', 'photoL_filter'], 'safe'],
+
         ];
     }
 
@@ -69,6 +77,21 @@ class LotSearch extends Lot
             ->andFilterWhere(['like', 'booking_number', $this->booking_number])
             ->andFilterWhere(['like', 'container', $this->container]);
 
+        $this->applyPhotoFilter($query, 'photo_a', $this->photoA_filter);
+        $this->applyPhotoFilter($query, 'photo_d', $this->photoD_filter);
+        $this->applyPhotoFilter($query, 'photo_w', $this->photoW_filter);
+        $this->applyPhotoFilter($query, 'photo_l', $this->photoL_filter);
+
         return $dataProvider;
+    }
+
+    private function applyPhotoFilter($query, $attribute, $filter)
+    {
+        if ($filter === 'Yes') {
+            $query->andWhere(['not', [$attribute => null]]);
+            $query->andWhere(['<>', $attribute, '']);
+        } elseif ($filter === 'No') {
+            $query->andWhere(['or', [$attribute => null], [$attribute => '']]);
+        }
     }
 }
