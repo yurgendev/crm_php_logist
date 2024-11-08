@@ -6,26 +6,20 @@ use yii\data\ActiveDataProvider;
 
 class LotSearch extends Lot
 {
-
+    public $search;
     public $photoA_filter;
     public $photoD_filter;
     public $photoW_filter;
     public $photoL_filter;
-    
+
     public function rules()
     {
         return [
             [['id', 'account_id', 'auction_id', 'customer_id', 'warehouse_id', 'company_id', 'has_keys'], 'integer'],
-            [['bos', 'photo_a', 'photo_d', 'photo_w', 'video', 'title', 'photo_l', 'status', 'status_changed', 'date_purchase', 'date_warehouse', 'payment_date', 'date_booking', 'data_container', 'date_unloaded', 'auto', 'vin', 'lot', 'url', 'line', 'booking_number', 'container', 'ata_data'], 'safe'],
+            [['bos', 'photo_a', 'photo_d', 'photo_w', 'video', 'title', 'photo_l', 'status', 'status_changed', 'date_purchase', 'date_warehouse', 'payment_date', 'date_booking', 'data_container', 'date_unloaded', 'auto', 'vin', 'lot', 'url', 'line', 'booking_number', 'container', 'ata_data', 'search'], 'safe'],
             [['price'], 'number'],
             [['photoA_filter', 'photoD_filter', 'photoW_filter', 'photoL_filter'], 'safe'],
-
         ];
-    }
-
-    public function scenarios()
-    {
-        return Model::scenarios();
     }
 
     public function search($params)
@@ -76,6 +70,14 @@ class LotSearch extends Lot
             ->andFilterWhere(['like', 'line', $this->line])
             ->andFilterWhere(['like', 'booking_number', $this->booking_number])
             ->andFilterWhere(['like', 'container', $this->container]);
+
+        if ($this->search) {
+            $query->andFilterWhere(['or',
+                ['like', 'vin', $this->search],
+                ['like', 'auto', $this->search],
+                ['like', 'lot', $this->search],
+            ]);
+        }
 
         $this->applyPhotoFilter($query, 'photo_a', $this->photoA_filter);
         $this->applyPhotoFilter($query, 'photo_d', $this->photoD_filter);

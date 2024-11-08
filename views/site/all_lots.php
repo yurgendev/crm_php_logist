@@ -18,13 +18,13 @@ $this->title = 'All Lots';
 <div class="site-all-lots">
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <!-- Форма поиска -->
-    <form method="get" action="<?= Url::to(['site/all-lots']) ?>" class="mb-3">
-        <div class="input-group">
-            <?= Html::activeTextInput($searchModel, 'vin', ['class' => 'form-control', 'placeholder' => 'Type VIN, Lot or Auto']) ?>
-            <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
-        </div>
-    </form>
+<!-- Форма поиска -->
+<form method="get" action="<?= Url::to(['site/all-lots']) ?>" class="mb-3">
+    <div class="input-group">
+        <?= Html::activeTextInput($searchModel, 'search', ['class' => 'form-control', 'placeholder' => 'Type VIN, Lot or Auto']) ?>
+        <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+    </div>
+</form>
 
     <div class="table-responsive">
         <table class="table table-striped">
