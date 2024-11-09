@@ -41,6 +41,7 @@ $this->title = 'All Lots';
                     </th>
                     <th>Auto</th>
                     <th>VIN</th>
+                    <th>Lot</th> 
                     <th>
                         Company
                         <?= Html::beginForm(['site/all-lots'], 'get', ['class' => 'filter-form']) ?>
@@ -112,6 +113,7 @@ $this->title = 'All Lots';
                         <td><?= Html::encode($lot->status) ?></td>
                         <td><?= Html::encode($lot->auto) ?></td>
                         <td><?= Html::encode($lot->vin) ?></td>
+                        <td><?= Html::encode($lot->lot) ?></td>
                         <td><?= Html::encode($lot->company->name) ?></td>
                         <td><?= Html::encode($lot->customer->name) ?></td>
                         <td><?= Html::encode($lot->warehouse->name) ?></td>
