@@ -292,23 +292,29 @@ class SiteController extends Controller
 
 
     public function actionNew()
-    {
-        $searchModel = new Lot();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+{
+    $searchModel = new LotSearch();
+    $searchModel->status = 'new'; 
 
-        // Получение данных для фильтров
-        $auctions = Auction::find()->all();
-        $customers = Customer::find()->all();
-        $warehouses = Warehouse::find()->all();
+    Yii::info('Search model status: ' . $searchModel->status, __METHOD__);
 
-        return $this->render('new', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-            'auctions' => $auctions,
-            'customers' => $customers,
-            'warehouses' => $warehouses,
-        ]);
-    }
+    $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+    Yii::info('Data provider: ' . print_r($dataProvider, true), __METHOD__);
+
+
+    $auctions = Auction::find()->all();
+    $customers = Customer::find()->all();
+    $warehouses = Warehouse::find()->all();
+
+    return $this->render('new', [
+        'searchModel' => $searchModel,
+        'dataProvider' => $dataProvider,
+        'auctions' => $auctions,
+        'customers' => $customers,
+        'warehouses' => $warehouses,
+    ]);
+}
 
     public function actionUnloaded()
     {
