@@ -16,7 +16,7 @@ class LotSearch extends Lot
     {
         return [
             [['id', 'account_id', 'auction_id', 'customer_id', 'warehouse_id', 'company_id', 'has_keys'], 'integer'],
-            [['bos', 'photo_a', 'photo_d', 'photo_w', 'video', 'title', 'photo_l', 'status', 'status_changed', 'date_purchase', 'date_warehouse', 'payment_date', 'date_booking', 'data_container', 'date_unloaded', 'auto', 'vin', 'lot', 'url', 'line', 'booking_number', 'container', 'ata_data', 'search'], 'safe'],
+            [['bos', 'photo_a', 'photo_d', 'photo_w', 'video', 'title', 'photo_l', 'status', 'status_changed', 'date_purchase', 'date_warehouse', 'payment_date', 'date_booking', 'date_container', 'date_unloaded', 'auto', 'vin', 'lot', 'url', 'line', 'booking_number', 'container', 'ata_data', 'search'], 'safe'],
             [['price'], 'number'],
             [['photoA_filter', 'photoD_filter', 'photoW_filter', 'photoL_filter'], 'safe'],
         ];

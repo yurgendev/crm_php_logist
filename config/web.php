@@ -59,6 +59,8 @@ $config = [
             'admin' => 'admin/default/index', // Обновите этот маршрут
             'admin/<controller:\w+>/<action:\w+>' => 'admin/<controller>/<action>', // Добавьте это правило
             'site/delete-file' => 'site/delete-file',
+            'deep-update/<id:\d+>' => 'site/deep-update',
+
         ],
         ],
     ],

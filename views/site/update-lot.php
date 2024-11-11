@@ -18,6 +18,11 @@ $this->params['breadcrumbs'][] = 'Update';
 
     <h1><?= Html::encode($this->title) ?></h1>
 
+    <!-- Кнопка Deep Update -->
+    <div class="text-right">
+        <?= Html::a('Deep Update', ['deep-update', 'id' => $model->id], ['class' => 'btn btn-warning']) ?>
+    </div>
+
     <div class="lot-form">
 
     <?php $form = ActiveForm::begin([

@@ -275,6 +275,19 @@ class SiteController extends Controller
         ]);
     }
 
+    public function actionDeepUpdate($id)
+    {
+        $model = $this->findModel($id);
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
+
+        return $this->render('deep_update', [
+            'model' => $model,
+        ]);
+    }
+
     protected function processFiles($uploadedFiles, $existingFiles, $type)
     {
         $savedFileNames = [];
@@ -517,4 +530,5 @@ public function actionViewPdf($id, $type)
     }
 }
     
+
     }

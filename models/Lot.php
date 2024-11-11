@@ -23,7 +23,7 @@ use yii\helpers\Url;
  * @property string|null $date_warehouse
  * @property string|null $payment_date
  * @property string|null $date_booking
- * @property string|null $data_container
+ * @property string|null $date_container
  * @property string|null $date_unloaded
  * @property string $auto
  * @property string $vin

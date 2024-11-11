@@ -28,7 +28,7 @@ AppAsset::register($this);
 <body>
 <?php $this->beginBody() ?>
 
-<<div class="container-fluid px-0 bg-light">
+<div class="container-fluid px-0 bg-light">
 <?php foreach (Yii::$app->session->getAllFlashes() as $type => $message): ?>
         <div class="alert alert-<?= $type ?> alert-dismissible fade show" role="alert">
             <?= $message ?>
