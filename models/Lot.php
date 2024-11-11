@@ -88,6 +88,43 @@ class Lot extends \yii\db\ActiveRecord
         ];
     }
 
+    public function beforeSave($insert)
+    {
+        if (parent::beforeSave($insert)) {
+            // Проверяем, изменился ли статус
+            if ($this->isAttributeChanged('status')) {
+                // Устанавливаем текущий сценарий в зависимости от нового статуса
+                $this->setScenario($this->status);
+
+                // Устанавливаем текущую дату и время для status_changed
+                $this->status_changed = date('Y-m-d H:i:s');
+
+                // Проверяем валидность модели в текущем сценарии
+                if (!$this->validate()) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Вычисляет количество дней, прошедших с момента изменения статуса.
+     *
+     * @return int Количество дней
+     */
+    public function getWait()
+    {
+        if ($this->status_changed) {
+            $statusChangedDate = new \DateTime($this->status_changed);
+            $currentDate = new \DateTime();
+            $interval = $statusChangedDate->diff($currentDate);
+            return $interval->days;
+        }
+        return 0;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -156,19 +193,7 @@ class Lot extends \yii\db\ActiveRecord
         }
     }
 
-    public function beforeSave($insert)
-    {
-        if (parent::beforeSave($insert)) {
-            if ($this->isAttributeChanged('status')) {
-                $this->setScenario($this->status);
-                if (!$this->validate()) {
-                    return false;
-                }
-            }
-            return true;
-        }
-        return false;
-    }
+    
 
     /**
      * {@inheritdoc}
@@ -425,6 +450,8 @@ class Lot extends \yii\db\ActiveRecord
         }
         return $initialPreviewConfig;
     }
+
+    
 
 }
 
