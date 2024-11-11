@@ -317,32 +317,31 @@ class SiteController extends Controller
 }
 
     public function actionUnloaded()
-    {
-        $search = Yii::$app->request->get('search', '');
-        $query = Lot::find()->where(['status' => 'unloaded']);
+{
+    $searchModel = new LotSearch();
+    $searchModel->status = 'unloaded'; 
 
-        if ($search) {
-            $query->andFilterWhere(['like', 'vin', $search])
-                ->orFilterWhere(['like', 'lot', $search])
-                ->orFilterWhere(['like', 'auto', $search]);
-        }
+    Yii::info('Search model status: ' . $searchModel->status, __METHOD__);
 
-        $pagination = new Pagination([
-            'defaultPageSize' => 10,
-            'totalCount' => $query->count(),
-        ]);
+    $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        $lots = $query->orderBy('id')
-            ->offset($pagination->offset)
-            ->limit($pagination->limit)
-            ->all();
+    Yii::info('Data provider: ' . print_r($dataProvider, true), __METHOD__);
 
-        return $this->render('unloaded', [
-            'lots' => $lots,
-            'pagination' => $pagination,
-            'search' => $search,
-        ]);
-    }
+
+    $auctions = Auction::find()->all();
+    $customers = Customer::find()->all();
+    $warehouses = Warehouse::find()->all();
+    $companies = Company::find()->all();
+
+    return $this->render('unloaded', [
+        'searchModel' => $searchModel,
+        'dataProvider' => $dataProvider,
+        'auctions' => $auctions,
+        'customers' => $customers,
+        'warehouses' => $warehouses,
+        'companies' => $companies,
+    ]);
+}
 
     public function actionDispatched()
 {
