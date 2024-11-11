@@ -35,16 +35,16 @@ $this->params['breadcrumbs'][] = 'Deep Update';
         <?= $form->field($model, 'lot')->textInput(['maxlength' => true]) ?>
         <?= $form->field($model, 'price')->textInput(['maxlength' => true]) ?>
         <?= $form->field($model, 'has_keys')->dropDownList(['1' => 'Yes', '0' => 'No'], ['prompt' => 'Select']) ?>
-        <?= $form->field($model, 'status_changed')->textInput() ?>
-        <?= $form->field($model, 'date_purchase')->textInput() ?>
-        <?= $form->field($model, 'date_dispatch')->textInput() ?>
-        <?= $form->field($model, 'date_warehouse')->textInput() ?>
-        <?= $form->field($model, 'payment_date')->textInput() ?>
-        <?= $form->field($model, 'date_booking')->textInput() ?>
+        <?= $form->field($model, 'status_changed')->input('date') ?>
+        <?= $form->field($model, 'date_purchase')->input('date') ?>
+        <?= $form->field($model, 'date_dispatch')->input('date') ?>
+        <?= $form->field($model, 'date_warehouse')->input('date') ?>
+        <?= $form->field($model, 'payment_date')->input('date') ?>
+        <?= $form->field($model, 'date_booking')->input('date') ?>
         <?= $form->field($model, 'date_container')->textInput(['maxlength' => true]) ?>
-        <?= $form->field($model, 'date_unloaded')->textInput() ?>
+        <?= $form->field($model, 'date_unloaded')->input('date') ?>
         <?= $form->field($model, 'ata_data')->textInput(['maxlength' => true]) ?>
-        <?= $form->field($model, 'date_container')->textInput() ?>
+        <?= $form->field($model, 'date_container')->input('date') ?>
         <?= $form->field($model, 'account_id')->dropDownList(
             ArrayHelper::map(Account::find()->all(), 'id', 'name'),
             ['prompt' => 'Select Account']
