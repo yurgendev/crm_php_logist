@@ -388,29 +388,22 @@ public function actionTerminal()
 
     public function actionLoading()
     {
-        $search = Yii::$app->request->get('search', '');
-        $query = Lot::find()->where(['status' => 'loading']);
-
-        if ($search) {
-            $query->andFilterWhere(['like', 'vin', $search])
-                ->orFilterWhere(['like', 'lot', $search])
-                ->orFilterWhere(['like', 'auto', $search]);
-        }
-
-        $pagination = new Pagination([
-            'defaultPageSize' => 10,
-            'totalCount' => $query->count(),
-        ]);
-
-        $lots = $query->orderBy('id')
-            ->offset($pagination->offset)
-            ->limit($pagination->limit)
-            ->all();
-
+        $searchModel = new LotSearch();
+        $searchModel->status = 'loading'; // Устанавливаем статус для фильтрации
+    
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+    
+        // Получение данных для фильтров
+        $customers = Customer::find()->all();
+        $warehouses = Warehouse::find()->all();
+        $companies = Company::find()->all();
+    
         return $this->render('loading', [
-            'lots' => $lots,
-            'pagination' => $pagination,
-            'search' => $search,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'customers' => $customers,
+            'warehouses' => $warehouses,
+            'companies' => $companies,
         ]);
     }
 
