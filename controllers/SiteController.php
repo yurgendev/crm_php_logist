@@ -365,33 +365,26 @@ class SiteController extends Controller
     ]);
 }
 
-    public function actionTerminal()
-    {
-        $search = Yii::$app->request->get('search', '');
-        $query = Lot::find()->where(['status' => 'terminal']);
+public function actionTerminal()
+{
+    $searchModel = new LotSearch();
+    $searchModel->status = 'terminal'; // Устанавливаем статус для фильтрации
 
-        if ($search) {
-            $query->andFilterWhere(['like', 'vin', $search])
-                ->orFilterWhere(['like', 'lot', $search])
-                ->orFilterWhere(['like', 'auto', $search]);
-        }
+    $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        $pagination = new Pagination([
-            'defaultPageSize' => 10,
-            'totalCount' => $query->count(),
-        ]);
+    // Получение данных для фильтров
+    $customers = Customer::find()->all();
+    $warehouses = Warehouse::find()->all();
+    $companies = Company::find()->all();
 
-        $lots = $query->orderBy('id')
-            ->offset($pagination->offset)
-            ->limit($pagination->limit)
-            ->all();
-
-        return $this->render('terminal', [
-            'lots' => $lots,
-            'pagination' => $pagination,
-            'search' => $search,
-        ]);
-    }
+    return $this->render('terminal', [
+        'searchModel' => $searchModel,
+        'dataProvider' => $dataProvider,
+        'customers' => $customers,
+        'warehouses' => $warehouses,
+        'companies' => $companies,
+    ]);
+}
 
     public function actionLoading()
     {
