@@ -82,10 +82,7 @@ $this->title = 'Loading Lots';
                         <td><?= Html::encode($lot->company->name) ?></td>
                         <td><?= Html::encode($lot->line) ?></td>
                         <td><?= Html::encode($lot->booking_number) ?></td>
-                        <td>
-                            <?php $photoLCount = $lot->getPhotoLFileCount(); ?>
-                            <?= $photoLCount > 0 ? Html::a('<span class="photo-count-circle">' . $photoLCount . '</span>', ['site/gallery', 'id' => $lot->id, 'type' => 'l'], ['target' => '_blank']) : '' ?>
-                        </td>
+                        <td><?= Html::encode($lot->getPhotoLFileCount()) ?></td>
                         <td>
                             <?= Html::a('<i class="fas fa-edit"></i>', ['site/update-lot', 'id' => $lot->id], ['class' => 'btn btn-outline-primary btn-sm', 'title' => 'Update']) ?>
                         </td>

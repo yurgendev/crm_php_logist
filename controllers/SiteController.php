@@ -347,7 +347,7 @@ class SiteController extends Controller
     public function actionDispatched()
 {
     $searchModel = new LotSearch();
-    $searchModel->status = 'dispatched'; // Устанавливаем статус для фильтрации
+    $searchModel->status = 'dispatched'; 
 
     $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -368,7 +368,7 @@ class SiteController extends Controller
 public function actionTerminal()
 {
     $searchModel = new LotSearch();
-    $searchModel->status = 'terminal'; // Устанавливаем статус для фильтрации
+    $searchModel->status = 'terminal'; 
 
     $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -389,7 +389,7 @@ public function actionTerminal()
     public function actionLoading()
     {
         $searchModel = new LotSearch();
-        $searchModel->status = 'loading'; // Устанавливаем статус для фильтрации
+        $searchModel->status = 'loading'; 
     
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
     
@@ -409,29 +409,22 @@ public function actionTerminal()
 
     public function actionShipped()
     {
-        $search = Yii::$app->request->get('search', '');
-        $query = Lot::find()->where(['status' => 'shipped']);
-
-        if ($search) {
-            $query->andFilterWhere(['like', 'vin', $search])
-                ->orFilterWhere(['like', 'lot', $search])
-                ->orFilterWhere(['like', 'auto', $search]);
-        }
-
-        $pagination = new Pagination([
-            'defaultPageSize' => 5,
-            'totalCount' => $query->count(),
-        ]);
-
-        $lots = $query->orderBy('id')
-            ->offset($pagination->offset)
-            ->limit($pagination->limit)
-            ->all();
-
+        $searchModel = new LotSearch();
+        $searchModel->status = 'shipped'; 
+    
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+    
+        // Получение данных для фильтров
+        $customers = Customer::find()->all();
+        $warehouses = Warehouse::find()->all();
+        $companies = Company::find()->all();
+    
         return $this->render('shipped', [
-            'lots' => $lots,
-            'pagination' => $pagination,
-            'search' => $search,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'customers' => $customers,
+            'warehouses' => $warehouses,
+            'companies' => $companies,
         ]);
     }
 

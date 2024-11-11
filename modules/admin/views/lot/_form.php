@@ -50,7 +50,7 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'date_warehouse')->input('date') ?>
     <?= $form->field($model, 'payment_date')->input('date') ?>
     <?= $form->field($model, 'date_booking')->input('date') ?>
-    <?= $form->field($model, 'data_container')->input('date') ?>
+    <?= $form->field($model, 'date_container')->input('date') ?>
     <?= $form->field($model, 'date_unloaded')->input('date') ?>
     <?= $form->field($model, 'has_keys')->checkbox() ?>
     <?= $form->field($model, 'line')->textInput(['maxlength' => true]) ?>

@@ -43,7 +43,7 @@ class LotSearch extends Lot
             'date_warehouse' => $this->date_warehouse,
             'payment_date' => $this->payment_date,
             'date_booking' => $this->date_booking,
-            'data_container' => $this->data_container,
+            'data_container' => $this->date_container,
             'date_unloaded' => $this->date_unloaded,
             'account_id' => $this->account_id,
             'auction_id' => $this->auction_id,

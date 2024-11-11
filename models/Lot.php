@@ -216,7 +216,7 @@ class Lot extends \yii\db\ActiveRecord
             'date_warehouse' => 'Date Warehouse',
             'payment_date' => 'Payment Date',
             'date_booking' => 'Date Booking',
-            'data_container' => 'Data Container',
+            'date_container' => 'Date Container',
             'date_unloaded' => 'Date Unloaded',
             'auto' => 'Auto',
             'vin' => 'Vin',
