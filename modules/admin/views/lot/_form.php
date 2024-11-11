@@ -23,6 +23,8 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'vin')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'lot')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'date_purchase')->input('date') ?>
+    <?= $form->field($model, 'date_dispatch')->input('date') ?>
+
     <?= $form->field($model, 'price')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'url')->textInput(['maxlength' => true]) ?>
     <br>

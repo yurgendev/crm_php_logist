@@ -41,6 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             // DATES:
             'date_purchase',
+            'date_dispatch',
             'date_warehouse',
             'payment_date',
             'date_booking',

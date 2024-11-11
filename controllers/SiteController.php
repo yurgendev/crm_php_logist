@@ -345,32 +345,25 @@ class SiteController extends Controller
     }
 
     public function actionDispatched()
-    {
-        $search = Yii::$app->request->get('search', '');
-        $query = Lot::find()->where(['status' => 'dispatched']);
+{
+    $searchModel = new LotSearch();
+    $searchModel->status = 'dispatched'; // Устанавливаем статус для фильтрации
 
-        if ($search) {
-            $query->andFilterWhere(['like', 'vin', $search])
-                ->orFilterWhere(['like', 'lot', $search])
-                ->orFilterWhere(['like', 'auto', $search]);
-        }
+    $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        $pagination = new Pagination([
-            'defaultPageSize' => 10,
-            'totalCount' => $query->count(),
-        ]);
+    // Получение данных для фильтров
+    $auctions = Auction::find()->all();
+    $customers = Customer::find()->all();
+    $warehouses = Warehouse::find()->all();
 
-        $lots = $query->orderBy('id')
-            ->offset($pagination->offset)
-            ->limit($pagination->limit)
-            ->all();
-
-        return $this->render('dispatched', [
-            'lots' => $lots,
-            'pagination' => $pagination,
-            'search' => $search,
-        ]);
-    }
+    return $this->render('dispatched', [
+        'searchModel' => $searchModel,
+        'dataProvider' => $dataProvider,
+        'auctions' => $auctions,
+        'customers' => $customers,
+        'warehouses' => $warehouses,
+    ]);
+}
 
     public function actionTerminal()
     {

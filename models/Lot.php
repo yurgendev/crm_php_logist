@@ -41,6 +41,7 @@ use yii\helpers\Url;
  * @property string|null $container
  * @property string|null $ata_data
  *
+ *
  * @property Account $account
  * @property Auction $auction
  * @property Company $company
@@ -120,7 +121,7 @@ class Lot extends \yii\db\ActiveRecord
             $statusChangedDate = new \DateTime($this->status_changed);
             $currentDate = new \DateTime();
             $interval = $statusChangedDate->diff($currentDate);
-            return $interval->days;
+            return $interval->days + 1;
         }
         return 0;
     }
@@ -135,7 +136,7 @@ class Lot extends \yii\db\ActiveRecord
             [['bosFiles', 'photoAFiles', 'photoDFiles', 'photoWFiles', 'videoFiles', 'titleFiles', 'photoLFiles'], 'file', 'maxFiles' => 25],
             [['account_id', 'auction_id', 'customer_id', 'warehouse_id', 'company_id', 'has_keys'], 'integer'],
             [['price'], 'number'],
-            [['status_changed', 'date_purchase', 'date_warehouse', 'payment_date', 'date_booking', 'date_container', 'date_unloaded', 'ata_data'], 'safe'],
+            [['status_changed', 'date_purchase', 'date_warehouse', 'payment_date', 'date_booking', 'date_container', 'date_unloaded', 'ata_data', 'date_dispatch'], 'safe'],
             [['bos', 'photo_a', 'photo_d', 'photo_w', 'video', 'title', 'photo_l', 'auto', 'lot', 'line', 'booking_number', 'container'], 'string', 'max' => 255],
             [['vin'], 'string', 'max' => 255],
             [['url'], 'string', 'max' => 200],
@@ -243,6 +244,7 @@ class Lot extends \yii\db\ActiveRecord
             'customer.name' => 'Customer',
             'warehouse.name' => 'Warehouse',
             'company.name' => 'Company',
+            'date_dispatch' => 'Date Dispatch',
         ];
     }
 
