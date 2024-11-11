@@ -160,6 +160,8 @@ class Lot extends \yii\db\ActiveRecord
         $scenarios[self::STATUS_LOADING] = ['status', 'date_container'];
         $scenarios[self::STATUS_SHIPPED] = ['status', 'date_unloaded'];
         $scenarios[self::STATUS_UNLOADED] = ['status'];
+        $scenarios[self::STATUS_ARCHIVED] = ['status'];
+
         return $scenarios;
     }
 

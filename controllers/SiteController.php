@@ -439,6 +439,27 @@ public function actionTerminal()
             'companies' => $companies,
         ]);
     }
+    
+    public function actionArchived()
+    {
+        $searchModel = new LotSearch();
+        $searchModel->status = 'archived'; 
+    
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+    
+        // Получение данных для фильтров
+        $customers = Customer::find()->all();
+        $warehouses = Warehouse::find()->all();
+        $companies = Company::find()->all();
+    
+        return $this->render('archived', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'customers' => $customers,
+            'warehouses' => $warehouses,
+            'companies' => $companies,
+        ]);
+    }
 
 
     

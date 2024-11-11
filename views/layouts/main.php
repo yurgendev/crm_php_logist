@@ -65,6 +65,7 @@ AppAsset::register($this);
                 <li><a class="nav-link" href="<?= \yii\helpers\Url::to(['site/loading']) ?>"><span class="fas fa-box"></span><span class="ps-3 name">Loading</span></a></li>
                 <li><a class="nav-link" href="<?= \yii\helpers\Url::to(['site/shipped']) ?>"><span class="fas fa-ship"></span><span class="ps-3 name">Shipped</span></a></li>
                 <li><a class="nav-link" href="<?= \yii\helpers\Url::to(['site/unloaded']) ?>"><span class="fas fa-clipboard-check"></span><span class="ps-3 name">Unloaded</span></a></li>
+                <li><a class="nav-link" href="<?= \yii\helpers\Url::to(['site/archived']) ?>"><span class="fas fa-book"></span><span class="ps-3 name">Archived cars</span></a></li>
             </ul>
         </div>
         <div class="col-md-10">
