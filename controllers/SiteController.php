@@ -68,15 +68,6 @@ class SiteController extends Controller
         ];
     }
 
-    /**
-     * Displays homepage.
-     *
-     * @return string
-     */
-    public function actionIndex()
-    {
-        return $this->render('index');
-    }
 
 
     /**
@@ -217,6 +208,27 @@ class SiteController extends Controller
 
         return $this->redirect(['site/gallery', 'id' => $id, 'type' => $type]);
     }
+
+    public function actionIndex()
+{
+    $statuses = [
+        'new' => 'New',
+        'dispatched' => 'Dispatched',
+        'terminal' => 'Terminal',
+        'loading' => 'Loading',
+        'shipped' => 'Shipped',
+        'unloaded' => 'Unloaded',
+    ];
+
+    $data = [];
+    foreach ($statuses as $status => $label) {
+        $data[$label] = Lot::find()->where(['status' => $status])->count();
+    }
+
+    return $this->render('index', [
+        'data' => $data,
+    ]);
+}
 
     public function actionAllLots()
     {
@@ -460,6 +472,8 @@ public function actionTerminal()
             'companies' => $companies,
         ]);
     }
+
+
 
 
     

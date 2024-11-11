@@ -281,3 +281,16 @@ ul li:hover .fas {
 
 
 
+.chart-container {
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 100px); /* Высота диаграммы с учетом высоты заголовка и отступов */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#logisticsChart {
+    max-width: 100%;
+    max-height: 100%;
+}

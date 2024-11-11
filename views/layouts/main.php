@@ -23,6 +23,8 @@ AppAsset::register($this);
     <link rel="stylesheet" href="<?= Yii::$app->request->baseUrl ?>/css/site.css">
     <link rel="stylesheet" href="<?= Yii::$app->request->baseUrl ?>/css/custom.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Подключение Chart.js -->
+
     
 </head>
 <body>
@@ -88,6 +90,7 @@ AppAsset::register($this);
 <?php $this->endBody() ?>
 <!-- Подключение Bootstrap JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+                        
 
 </body>
 </html>
